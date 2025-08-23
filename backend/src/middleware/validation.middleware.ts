@@ -1,5 +1,5 @@
 import { Response, Request, NextFunction } from 'express';
-import { BadRequestError } from '../errors';
+import { BadRequestError } from '../errors/api.error';
 
 // Validation middleware for user data
 const validateUserData = (req: Request, _res: Response, next: NextFunction) => {

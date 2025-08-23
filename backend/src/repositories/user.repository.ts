@@ -1,6 +1,5 @@
 import { Types } from 'mongoose';
 import { IUser, IUserModel } from '../interfaces';
-import { UserModel } from '../models';
 
 export class UserRepository {
   private static instance: UserRepository;
@@ -46,5 +45,3 @@ export class UserRepository {
     return this.userModel.findByIdAndUpdate(userId, updateData, { new: true });
   }
 }
-
-export const userRepository = UserRepository.getInstance(UserModel);

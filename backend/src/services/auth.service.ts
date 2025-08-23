@@ -1,21 +1,29 @@
 import { Types } from 'mongoose';
 import { IUser } from '../interfaces';
-import { TokenPair, tokenService, userService, UserService } from '.';
-import { PasswordUtils } from '../utils';
+import { TokenService } from './token.service';
+import { UserService } from './user.service';
+import { PasswordUtils } from '../utils/password/password.util';
 import {
   AuthenticationError,
   DuplicateRequestError,
   ValidationError,
-} from '../errors';
+} from '../errors/api.error';
+import { TokenPair } from '../interfaces/services/token.service.interface';
 
 export class AuthService {
   private static instance: AuthService;
 
-  private constructor(private userService: UserService) {}
+  private constructor(
+    private userService: UserService,
+    private tokenService: TokenService
+  ) {}
 
-  public static getInstance(userService: UserService): AuthService {
+  public static getInstance(
+    userService: UserService,
+    tokenService: TokenService
+  ): AuthService {
     if (!AuthService.instance) {
-      AuthService.instance = new AuthService(userService);
+      AuthService.instance = new AuthService(userService, tokenService);
     }
     return AuthService.instance;
   }
@@ -35,7 +43,7 @@ export class AuthService {
 
     // Create user (password hashing handled in repository)
     const user = await this.userService.create(userData);
-    const tokens = tokenService.generateTokenPair(user);
+    const tokens = this.tokenService.generateTokenPair(user);
 
     return { user, tokens };
   }
@@ -55,7 +63,7 @@ export class AuthService {
       lastLogin: user.lastLogin,
     });
 
-    const tokens = tokenService.generateTokenPair(user);
+    const tokens = this.tokenService.generateTokenPair(user);
     return { user, tokens };
   }
 
@@ -66,7 +74,7 @@ export class AuthService {
     // In future, you might want to blacklist tokens
     await this.userService.getById(user._id);
     // Generate new token pair
-    const tokens = tokenService.generateTokenPair(user);
+    const tokens = this.tokenService.generateTokenPair(user);
     return { user, tokens };
   }
 
@@ -81,5 +89,3 @@ export class AuthService {
     // TODO: Implement token blacklisting if needed
   }
 }
-
-export const authService = AuthService.getInstance(userService);

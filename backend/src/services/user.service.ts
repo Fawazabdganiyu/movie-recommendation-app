@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
-import { userRepository, UserRepository } from '../repositories';
+import { UserRepository } from '../repositories';
 import { IUser, IUserRating } from '../interfaces';
-import { NotFoundError } from '../errors';
+import { NotFoundError } from '../errors/api.error';
 
 export class UserService {
   private static instance: UserService;
@@ -147,5 +147,3 @@ export class UserService {
     }
   }
 }
-
-export const userService = UserService.getInstance(userRepository);

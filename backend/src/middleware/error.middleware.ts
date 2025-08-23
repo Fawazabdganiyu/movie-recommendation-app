@@ -15,8 +15,16 @@ export const errorHandler = (
   res: Response,
   _next: NextFunction
 ) => {
-  console.error('Error: ', error);
-
+  // Log the error details
+  console.error('Request Error', {
+    error: {
+      message: error.message,
+      stack: error.stack,
+      name: error.name,
+      code: error.code,
+      status: error.status || error.statusCode,
+    },
+  });
   // Handle JSON parsing errors
   if (
     error instanceof SyntaxError &&
@@ -24,12 +32,14 @@ export const errorHandler = (
     'body' in error
   ) {
     return res.status(400).json({
+      success: false,
       error: 'Bad Request',
       message: 'Invalid JSON format in request body',
     });
   }
 
   res.status(error.status || 500).json({
+    success: false,
     error: error.error || 'Internal Server Error',
     message: error.message || 'An unexpected error occurred',
   });

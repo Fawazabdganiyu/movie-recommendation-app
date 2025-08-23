@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { Types } from 'mongoose';
-import { userRepository } from '../repositories';
+import { getTokenService, getUserService } from '../container';
 import { AuthMiddlewareOptions, IUser } from '../interfaces';
-import { DecodedToken, tokenService } from '../services';
-import { AuthenticationError, AuthorizationError } from '../errors';
+import { DecodedToken } from '../services';
+import { AuthenticationError, AuthorizationError } from '../errors/api.error';
 
 // Extend Express Request to include user
 declare global {
@@ -25,6 +25,7 @@ export const authenticate = (options: AuthMiddlewareOptions = {}) => {
 
       // Extract token from header
       const authHeader = req.headers.authorization;
+      const tokenService = getTokenService();
       const token = tokenService.extractTokenFromHeader(authHeader);
 
       // Handle missing token
@@ -51,7 +52,7 @@ export const authenticate = (options: AuthMiddlewareOptions = {}) => {
 
       // Fetch user if needed
       if (!skipUserFetch) {
-        const user = await userRepository.findById(
+        const user = await getUserService().getById(
           new Types.ObjectId(decoded.userId)
         );
 
@@ -162,10 +163,10 @@ export const validateRefreshToken = async (
     }
 
     // Verify refresh token
-    const decoded = tokenService.verifyRefreshToken(refreshToken);
+    const decoded = getTokenService().verifyRefreshToken(refreshToken);
 
     // Fetch user to ensure they still exist and are active
-    const user = await userRepository.findById(
+    const user = await getUserService().getById(
       new Types.ObjectId(decoded.userId)
     );
 
@@ -193,6 +194,7 @@ export const extractUserId = (
 ) => {
   try {
     const authHeader = req.headers.authorization;
+    const tokenService = getTokenService();
     const token = tokenService.extractTokenFromHeader(authHeader);
 
     if (token) {

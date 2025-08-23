@@ -1,6 +1,8 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
 import { config } from '../config';
 import { IUser } from '../interfaces';
+import { TokenType } from '../enums/token.enum';
+import { TokenPair } from '../interfaces/services/token.service.interface';
 
 export interface TokenPayload {
   userId: string;
@@ -9,11 +11,6 @@ export interface TokenPayload {
   type: 'access' | 'refresh';
   iat?: number;
   exp?: number;
-}
-
-export interface TokenPair {
-  accessToken: string;
-  refreshToken: string;
 }
 
 export interface DecodedToken {
@@ -54,7 +51,7 @@ export class TokenService {
       userId: user._id.toString(),
       email: user.email,
       username: user.username,
-      type: 'access',
+      type: TokenType.ACCESS,
     };
 
     return jwt.sign(payload, this.accessTokenSecret, {
@@ -72,7 +69,7 @@ export class TokenService {
       userId: user._id.toString(),
       email: user.email,
       username: user.username,
-      type: 'refresh',
+      type: TokenType.REFRESH,
     };
 
     return jwt.sign(payload, this.refreshTokenSecret, {
@@ -177,48 +174,4 @@ export class TokenService {
     if (!expiry) return true;
     return expiry < new Date();
   }
-
-  /**
-   * Decode token without verification (for debugging)
-   */
-  decodeToken(token: string): any {
-    try {
-      return jwt.decode(token);
-    } catch {
-      return null;
-    }
-  }
-
-  /**
-   * Generate a single token (for backwards compatibility)
-   */
-  generate(userId: string): string {
-    const payload: TokenPayload = {
-      userId,
-      email: '', // Will be filled by the calling service
-      username: '', // Will be filled by the calling service
-      type: 'access',
-    };
-
-    return jwt.sign(payload, this.accessTokenSecret, {
-      expiresIn: this.accessTokenExpiry,
-      issuer: 'movie-recommendation-app',
-      audience: 'movie-app-users',
-    } as SignOptions);
-  }
-
-  /**
-   * Verify any token (access or refresh)
-   */
-  verifyToken(
-    token: string,
-    type: 'access' | 'refresh' = 'access'
-  ): DecodedToken {
-    return type === 'access'
-      ? this.verifyAccessToken(token)
-      : this.verifyRefreshToken(token);
-  }
 }
-
-// Export singleton instance
-export const tokenService = TokenService.getInstance();

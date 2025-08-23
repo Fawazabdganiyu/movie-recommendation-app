@@ -1,4 +1,4 @@
-export class CustomError extends Error {
+export default class CustomError extends Error {
   public success: boolean;
   public status: number;
   public error: any;

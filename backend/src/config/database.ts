@@ -26,7 +26,6 @@ export class DatabaseConnection {
         serverSelectionTimeoutMS: 5000,
         socketTimeoutMS: 45000,
         bufferCommands: false,
-        bufferMaxEntries: 0,
       };
 
       await mongoose.connect(config.database.uri, mongooseOptions);
@@ -90,6 +89,3 @@ export class DatabaseConnection {
     });
   }
 }
-
-// Export singleton instance
-export const dbConnection = DatabaseConnection.getInstance();

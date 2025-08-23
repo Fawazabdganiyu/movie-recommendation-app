@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import { IUser, IUserModel, UserDocument } from '../interfaces';
-import { PasswordUtils } from '../utils';
+import { PasswordUtils } from '../utils/password/password.util';
 
 // User schema
 const userSchema = new Schema<UserDocument>(
@@ -159,8 +159,6 @@ const userSchema = new Schema<UserDocument>(
 );
 
 // Indexes for better performance
-userSchema.index({ email: 1 });
-userSchema.index({ username: 1 });
 userSchema.index({ 'ratings.movieId': 1 });
 userSchema.index({ favorites: 1 });
 userSchema.index({ watchlist: 1 });
