@@ -3,7 +3,11 @@ import { Types } from 'mongoose';
 import { getTokenService, getUserService } from '../container';
 import { AuthMiddlewareOptions, IUser } from '../interfaces';
 import { DecodedToken } from '../services';
-import { AuthenticationError, AuthorizationError } from '../errors/api.error';
+import {
+  AuthenticationError,
+  AuthorizationError,
+  BadRequestError,
+} from '../errors/api.error';
 
 // Extend Express Request to include user
 declare global {
@@ -156,11 +160,10 @@ export const validateRefreshToken = async (
   next: NextFunction
 ) => {
   try {
-    const { refreshToken } = req.body;
+    if (!req.body || !req.body.refreshToken)
+      throw new BadRequestError('Refresh token is required');
 
-    if (!refreshToken) {
-      throw new AuthenticationError('Refresh token required');
-    }
+    const { refreshToken } = req.body;
 
     // Verify refresh token
     const decoded = getTokenService().verifyRefreshToken(refreshToken);

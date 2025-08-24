@@ -6,6 +6,7 @@ import { PasswordUtils } from '../utils/password/password.util';
 import {
   AuthenticationError,
   DuplicateRequestError,
+  NotFoundError,
   ValidationError,
 } from '../errors/api.error';
 import { TokenPair } from '../interfaces/services/token.service.interface';
@@ -28,24 +29,30 @@ export class AuthService {
     return AuthService.instance;
   }
 
-  async register(userData: IUser): Promise<{ user: IUser; tokens: TokenPair }> {
+  async register(userData: IUser): Promise<void> {
+    const { email, password } = userData;
+    if (!email || !password) {
+      throw new ValidationError('Email and password are required');
+    }
+
     // Validate password
-    const validation = PasswordUtils.validateStrength(userData.password);
+    const validation = PasswordUtils.validateStrength(password);
     if (!validation.isValid) {
       throw new ValidationError('Weak password', validation.errors);
     }
 
     // Check if user exists
-    const existingUser = await this.userService.getByEmail(userData.email);
-    if (existingUser) {
-      throw new DuplicateRequestError('User already exists');
+    try {
+      const existingUser = await this.userService.getByEmail(email);
+      if (existingUser) {
+        throw new DuplicateRequestError('User already exists');
+      }
+    } catch (err) {
+      if (!(err instanceof NotFoundError)) throw err;
     }
 
     // Create user (password hashing handled in repository)
-    const user = await this.userService.create(userData);
-    const tokens = this.tokenService.generateTokenPair(user);
-
-    return { user, tokens };
+    await this.userService.create(userData);
   }
 
   async login(
@@ -67,25 +74,16 @@ export class AuthService {
     return { user, tokens };
   }
 
-  async getRefreshToken(
-    user: IUser
-  ): Promise<{ user: IUser; tokens: TokenPair }> {
-    // For now, just verify user exists
-    // In future, you might want to blacklist tokens
-    await this.userService.getById(user._id);
-    // Generate new token pair
-    const tokens = this.tokenService.generateTokenPair(user);
-    return { user, tokens };
+  async getRefreshToken(user: IUser): Promise<string> {
+    // Generate new access token
+    const accessToken = this.tokenService.generateAccessToken(user);
+    return accessToken;
   }
 
   async logout(userId: Types.ObjectId): Promise<void> {
-    // For now, just verify user exists
-    // In future, you might want to blacklist tokens
     const user = await this.userService.getById(userId);
     if (!user) {
       throw new AuthenticationError('User not found');
     }
-
-    // TODO: Implement token blacklisting if needed
   }
 }

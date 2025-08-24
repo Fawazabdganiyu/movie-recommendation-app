@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { UserRepository } from '../repositories';
+import { UserRepository } from '../repositories/user.repository';
 import { IUser, IUserRating } from '../interfaces';
 import { NotFoundError } from '../errors/api.error';
 

@@ -4,7 +4,6 @@ import { getDbConnection } from './container';
 import {
   displayServerInfo,
   displayStartupBanner,
-  gracefulShutdown,
   setupPerformanceMonitoring,
   setupProcessErrorHandlers,
   validateEnvironment,
@@ -21,7 +20,7 @@ const startServer = async () => {
 
     // Initialize the application
     console.log('🔄 Initializing application...');
-    const app = new App(getDbConnection());
+    const app = await App.bootstrap(getDbConnection());
 
     // Setup performance monitoring
     setupPerformanceMonitoring();
@@ -29,26 +28,7 @@ const startServer = async () => {
     // Start the server
     const server = app.getApp().listen(config.server.port, () => {
       displayServerInfo();
-
-      // Additional production checks
-      if (config.server.nodeEnv === 'production') {
-        console.log('🔒 Production mode: Enhanced security enabled');
-        console.log('📈 Performance monitoring: Active');
-      }
     });
-
-    // Set server timeout for long-running requests
-    server.timeout = 30000; // 30 seconds
-
-    // Keep alive timeout
-    server.keepAliveTimeout = 65000; // 65 seconds
-
-    // Headers timeout
-    server.headersTimeout = 66000; // 66 seconds
-
-    // Listen for termination signals
-    process.on('SIGTERM', () => gracefulShutdown(app, server, 'SIGTERM'));
-    process.on('SIGINT', () => gracefulShutdown(app, server, 'SIGINT'));
 
     // Export server for testing
     return server;

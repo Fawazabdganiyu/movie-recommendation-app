@@ -19,6 +19,10 @@ export const displayServerInfo = (): void => {
   console.log(`   Environment: ${config.server.nodeEnv}`);
   console.log(`   Port: ${config.server.port}`);
   console.log(`   Node Version: ${process.version}`);
+  console.log(`   Address: ${config.server.baseUrl}`);
+  console.log(
+    `   API Documentation: ${config.server.baseUrl}${config.server.apiPrefix}/docs`
+  );
   console.log(`   Platform: ${process.platform}`);
   console.log(
     `   Memory Usage: ${Math.round(process.memoryUsage().rss / 1024 / 1024)} MB`

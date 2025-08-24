@@ -40,7 +40,9 @@ export const errorHandler = (
 
   res.status(error.status || 500).json({
     success: false,
-    error: error.error || 'Internal Server Error',
+    error:
+      `${error.error}${error.errors?.length ? ' - ' + error.errors.join(', ') : ''}` ||
+      'Internal Server Error',
     message: error.message || 'An unexpected error occurred',
   });
 };

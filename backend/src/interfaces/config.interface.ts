@@ -23,6 +23,8 @@ interface TMDBConfig {
 interface ServerConfig {
   port: number;
   nodeEnv: string;
+  baseUrl: string;
+  apiPrefix: string;
   corsOrigin: string[];
 }
 

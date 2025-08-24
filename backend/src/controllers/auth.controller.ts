@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { getAuthService } from '../container';
 import { success } from '../utils/response.util';
+import { BadRequestError } from '../errors/api.error';
+import { IUser } from '../interfaces';
 
 export class AuthController {
   private static instance: AuthController;
@@ -13,8 +15,13 @@ export class AuthController {
 
   register = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await getAuthService().register(req.body);
-      success(res, 'User registered successfully', result, 201);
+      await getAuthService().register(req.body);
+      success(
+        res,
+        'User registered successfully - Please check your email for verification',
+        '',
+        201
+      );
     } catch (e) {
       next(e);
     }
@@ -22,6 +29,9 @@ export class AuthController {
 
   login = async (req: Request, res: Response, next: NextFunction) => {
     try {
+      if (!req.body || !req.body.email || !req.body.password)
+        throw new BadRequestError('Email and password are required');
+
       const { email, password } = req.body;
       const result = await getAuthService().login(email, password);
       success(res, 'Login successful', result);
@@ -33,8 +43,11 @@ export class AuthController {
   refresh = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { refreshToken } = req.body;
-      const result = await getAuthService().getRefreshToken(refreshToken);
-      success(res, 'Token refreshed successfully', result);
+      const user = req.user as IUser;
+      const accessToken = await getAuthService().getRefreshToken(user);
+      const data = { user, tokens: { accessToken, refreshToken } };
+
+      success(res, 'Token refreshed successfully', data);
     } catch (e) {
       next(e);
     }
@@ -47,26 +60,6 @@ export class AuthController {
     } catch (e) {
       next(e);
     }
-  };
-
-  profile = async (_req: Request, res: Response) => {
-    // Extend to map user public profile when implemented
-    return success(res, 'Profile fetched', {
-      // user: req.user!.getPublicProfile(),
-    });
-  };
-
-  popularMovies = async (req: Request, res: Response) => {
-    const userId = req.user?._id.toString();
-    return success(res, 'Popular movies fetched', {
-      movies: [],
-      personalized: !!userId,
-    });
-  };
-
-  updateProfile = async (_req: Request, res: Response) => {
-    // Placeholder; implement update logic using user service
-    return success(res, 'Profile updated successfully');
   };
 }
 

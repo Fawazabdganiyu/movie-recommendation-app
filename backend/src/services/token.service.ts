@@ -3,6 +3,7 @@ import { config } from '../config';
 import { IUser } from '../interfaces';
 import { TokenType } from '../enums/token.enum';
 import { TokenPair } from '../interfaces/services/token.service.interface';
+import { AuthorizationError } from '../errors/api.error';
 
 export interface TokenPayload {
   userId: string;
@@ -100,16 +101,16 @@ export class TokenService {
       }) as DecodedToken;
 
       if (decoded.type !== 'access') {
-        throw new Error('Invalid token type');
+        throw new AuthorizationError('Invalid token type');
       }
 
       return decoded;
     } catch (error) {
       if (error instanceof jwt.TokenExpiredError) {
-        throw new Error('Access token expired');
+        throw new AuthorizationError('Access token expired');
       }
       if (error instanceof jwt.JsonWebTokenError) {
-        throw new Error('Invalid access token');
+        throw new AuthorizationError('Invalid access token');
       }
       throw error;
     }
@@ -126,16 +127,16 @@ export class TokenService {
       }) as DecodedToken;
 
       if (decoded.type !== 'refresh') {
-        throw new Error('Invalid token type');
+        throw new AuthorizationError('Invalid token type');
       }
 
       return decoded;
     } catch (error) {
       if (error instanceof jwt.TokenExpiredError) {
-        throw new Error('Refresh token expired');
+        throw new AuthorizationError('Refresh token expired');
       }
       if (error instanceof jwt.JsonWebTokenError) {
-        throw new Error('Invalid refresh token');
+        throw new AuthorizationError('Invalid refresh token');
       }
       throw error;
     }

@@ -140,6 +140,7 @@ const userSchema = new Schema<UserDocument>(
   },
   {
     timestamps: true,
+    versionKey: false,
     toJSON: {
       virtuals: true,
       transform: function (_doc, ret) {
@@ -159,9 +160,9 @@ const userSchema = new Schema<UserDocument>(
 );
 
 // Indexes for better performance
-userSchema.index({ 'ratings.movieId': 1 });
-userSchema.index({ favorites: 1 });
-userSchema.index({ watchlist: 1 });
+// userSchema.index({ 'ratings.movieId': 1 });
+// userSchema.index({ favorites: 1 });
+// userSchema.index({ watchlist: 1 });
 
 // Virtual for full name
 userSchema.virtual('fullName').get(function (this: IUser) {
