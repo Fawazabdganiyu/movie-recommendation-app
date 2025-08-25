@@ -1,13 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { Types } from 'mongoose';
 import { getTokenService, getUserService } from '../container';
-import { AuthMiddlewareOptions, IUser } from '../interfaces';
-import { DecodedToken } from '../services';
-import {
-  AuthenticationError,
-  AuthorizationError,
-  BadRequestError,
-} from '../errors/api.error';
+import { AuthMiddlewareOptions, DecodedToken, IUser } from '../interfaces';
+
+import { AuthenticationError, BadRequestError } from '../errors/api.error';
 
 // Extend Express Request to include user
 declare global {
@@ -116,32 +112,6 @@ export const authorize = (allowedRoles: string[] = []) => {
         // if (!hasPermission) {
         //   throw new AuthorizationError('Insufficient permissions');
         // }
-      }
-
-      next();
-    } catch (error) {
-      next(error);
-    }
-  };
-};
-
-/**
- * Middleware to check if user owns the resource
- */
-export const requireOwnership = (userIdField = 'userId') => {
-  return (req: Request, _res: Response, next: NextFunction) => {
-    try {
-      if (!req.user) {
-        throw new AuthenticationError('Authentication required');
-      }
-
-      const resourceUserId = req.params[userIdField] || req.body[userIdField];
-      const currentUserId = req.user._id.toString();
-
-      if (resourceUserId !== currentUserId) {
-        throw new AuthorizationError(
-          'Access denied: Resource ownership required'
-        );
       }
 
       next();

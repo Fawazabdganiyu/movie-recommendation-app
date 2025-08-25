@@ -73,6 +73,10 @@ export class UserService {
     userId: Types.ObjectId,
     updateData: Partial<IUser>
   ): Promise<IUser> {
+    // Remove sensitive fields from update data
+    if (updateData.email) delete updateData.email;
+    if (updateData.password) delete updateData.password;
+
     const updatedUser = await this.userRepository.update(userId, updateData);
     if (!updatedUser) {
       throw new NotFoundError(`User with ID ${userId} not found`);

@@ -169,7 +169,7 @@ userSchema.virtual('fullName').get(function (this: IUser) {
   if (this.firstName && this.lastName) {
     return `${this.firstName} ${this.lastName}`;
   }
-  return this.firstName || this.lastName || this.username;
+  return this.firstName || this.lastName || '';
 });
 
 // Pre-save middleware to hash password

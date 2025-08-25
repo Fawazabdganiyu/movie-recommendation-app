@@ -2,26 +2,12 @@ import jwt, { SignOptions } from 'jsonwebtoken';
 import { config } from '../config';
 import { IUser } from '../interfaces';
 import { TokenType } from '../enums/token.enum';
-import { TokenPair } from '../interfaces/services/token.service.interface';
+import {
+  DecodedToken,
+  TokenPair,
+  TokenPayload,
+} from '../interfaces/services/token.service.interface';
 import { AuthorizationError } from '../errors/api.error';
-
-export interface TokenPayload {
-  userId: string;
-  email: string;
-  username: string;
-  type: 'access' | 'refresh';
-  iat?: number;
-  exp?: number;
-}
-
-export interface DecodedToken {
-  userId: string;
-  email: string;
-  username: string;
-  type: 'access' | 'refresh';
-  iat: number;
-  exp: number;
-}
 
 export class TokenService {
   private static instance: TokenService;
