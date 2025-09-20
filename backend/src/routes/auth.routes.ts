@@ -2,7 +2,11 @@ import { Router } from 'express';
 import { requireAuth, validateRefreshToken } from '../middleware';
 import { authController } from '../controllers/auth.controller';
 import { validateBody } from '../middleware/zod-validation.middleware';
-import { loginSchema, registerSchema, refreshTokenSchema } from '@shared/types';
+import {
+  loginSchema,
+  registerSchema,
+  refreshTokenSchema,
+} from '@shared/validation';
 
 const router = Router();
 

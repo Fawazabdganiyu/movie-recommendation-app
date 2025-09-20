@@ -38,3 +38,9 @@ export class DuplicateRequestError extends CustomError {
     super(409, 'Conflict', message);
   }
 }
+
+export class ExternalServiceError extends CustomError {
+  constructor(message: string) {
+    super(502, 'Bad Gateway', message);
+  }
+}

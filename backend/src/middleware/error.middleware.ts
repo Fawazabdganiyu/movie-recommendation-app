@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
 
@@ -22,8 +23,8 @@ export const errorHandler = (
   // Log the error details
   console.error('Request Error', {
     error: {
-      message: error.message,
-      stack: error.stack,
+      message: error.response?.data || error.message,
+      stack: axios.isAxiosError(error) ? '' : error.stack, // Avoid logging stack for Axios errors
       name: error.name,
       code: error.code,
       status: error.status || error.statusCode,
@@ -51,6 +52,11 @@ export const errorHandler = (
       .join(', ');
 
     errorMessage = `Validation failed: ${errorMessage}`;
+  }
+
+  if (axios.isAxiosError(error)) {
+    err = 'ExternalServiceError';
+    errorMessage = `${error.response?.statusText || error.message}`;
   }
 
   res.status(error.status || 500).json({

@@ -17,7 +17,8 @@ export class AuthController {
     try {
       // req.body is now validated and transformed by Zod middleware
       await getAuthService().register(req.body);
-      success(
+
+      return success(
         res,
         'User registered successfully - Please check your email for verification',
         '',
@@ -33,7 +34,8 @@ export class AuthController {
       // req.body is now validated by Zod middleware
       const { email, password } = req.body;
       const result = await getAuthService().login(email, password);
-      success(res, 'Login successful', result);
+
+      return success(res, 'Login successful', result);
     } catch (e) {
       next(e);
     }
@@ -47,7 +49,7 @@ export class AuthController {
       const accessToken = await getAuthService().getRefreshToken(user);
       const data = { user, tokens: { accessToken, refreshToken } };
 
-      success(res, 'Token refreshed successfully', data);
+      return success(res, 'Token refreshed successfully', data);
     } catch (e) {
       next(e);
     }
@@ -56,7 +58,8 @@ export class AuthController {
   logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
       await getAuthService().logout(req.user!._id as Types.ObjectId);
-      success(res, 'Logout successful');
+
+      return success(res, 'Logout successful');
     } catch (e) {
       next(e);
     }

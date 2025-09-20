@@ -7,6 +7,7 @@ import { TokenService } from '../services/token.service';
 import { UserService } from '../services/user.service';
 import { AuthService } from '../services/auth.service';
 import { DatabaseConnection } from '../config';
+import { TMDBService } from '../services/tmdb.service';
 
 let _userRepository: UserRepository | undefined;
 
@@ -14,6 +15,8 @@ let _tokenService: TokenService | undefined;
 let _userService: UserService | undefined;
 let _authService: AuthService | undefined;
 let _dbConnection: DatabaseConnection | undefined;
+
+let _tmdbService: TMDBService | undefined;
 
 const getUserRepository = (): UserRepository => {
   return (_userRepository ||= UserRepository.getInstance(UserModel));
@@ -37,4 +40,8 @@ export const getAuthService = (): AuthService => {
     getUserService(),
     getTokenService()
   ));
+};
+
+export const getTmdbService = (): TMDBService => {
+  return (_tmdbService ||= TMDBService.getInstance());
 };
