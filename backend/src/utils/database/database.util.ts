@@ -1,4 +1,4 @@
-import { ModelResponse, PaginatedResponse } from '../../interfaces';
+import { ModelResponse, PaginatedResponse } from '../../types';
 
 // Common database utilities
 export class DatabaseUtils {

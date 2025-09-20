@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
-import { IPasswordValidation } from '../../interfaces';
+import { IPasswordValidation } from '../../types';
 
 export class PasswordUtils {
   static async hash(password: string): Promise<string> {

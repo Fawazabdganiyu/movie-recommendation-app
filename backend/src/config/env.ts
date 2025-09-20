@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { AppConfig } from '../interfaces';
+import { AppConfig } from '../types';
 
 // Load environment variables
 dotenv.config();

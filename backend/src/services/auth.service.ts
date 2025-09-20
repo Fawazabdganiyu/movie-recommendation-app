@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { IUser } from '../interfaces';
+import { AuthTokens, User } from '@shared/types';
 import { TokenService } from './token.service';
 import { UserService } from './user.service';
 import { PasswordUtils } from '../utils/password/password.util';
@@ -9,7 +9,6 @@ import {
   NotFoundError,
   ValidationError,
 } from '../errors/api.error';
-import { TokenPair } from '../interfaces/services/token.service.interface';
 
 export class AuthService {
   private static instance: AuthService;
@@ -29,7 +28,7 @@ export class AuthService {
     return AuthService.instance;
   }
 
-  async register(userData: IUser): Promise<void> {
+  async register(userData: User): Promise<void> {
     const { email, password } = userData;
     if (!email || !password) {
       throw new ValidationError('Email and password are required');
@@ -58,7 +57,7 @@ export class AuthService {
   async login(
     email: string,
     password: string
-  ): Promise<{ user: IUser; tokens: TokenPair }> {
+  ): Promise<{ user: User; tokens: AuthTokens }> {
     const user = await this.userService.getByCredentials(email, password);
     if (!user) {
       throw new AuthenticationError('Invalid credentials');
@@ -66,7 +65,7 @@ export class AuthService {
 
     // Update last login
     user.lastLogin = new Date();
-    await this.userService.update(user._id, {
+    await this.userService.update(user._id as Types.ObjectId, {
       lastLogin: user.lastLogin,
     });
 
@@ -74,7 +73,7 @@ export class AuthService {
     return { user, tokens };
   }
 
-  async getRefreshToken(user: IUser): Promise<string> {
+  async getRefreshToken(user: User): Promise<string> {
     // Generate new access token
     const accessToken = this.tokenService.generateAccessToken(user);
     return accessToken;

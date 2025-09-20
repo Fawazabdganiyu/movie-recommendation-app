@@ -1,5 +1,6 @@
 import { Types } from 'mongoose';
-import { IUser, IUserModel } from '../interfaces';
+import { IUserModel } from '../types';
+import { User } from '@shared/types';
 
 export class UserRepository {
   private static instance: UserRepository;
@@ -14,8 +15,8 @@ export class UserRepository {
   }
 
   async create(
-    userData: Omit<IUser, '_id' | 'createdAt' | 'updatedAt'>
-  ): Promise<IUser> {
+    userData: Omit<User, '_id' | 'createdAt' | 'updatedAt'>
+  ): Promise<User> {
     const user = new this.userModel({
       ...userData,
     });
@@ -23,25 +24,25 @@ export class UserRepository {
     return user.save();
   }
 
-  async findByEmail(email: string): Promise<IUser | null> {
+  async findByEmail(email: string): Promise<User | null> {
     return this.userModel.findOne({ email, isActive: true });
   }
 
-  async findById(userId: Types.ObjectId): Promise<IUser | null> {
+  async findById(userId: Types.ObjectId): Promise<User | null> {
     return this.userModel.findById(userId);
   }
 
   async findByCredentials(
     email: string,
     password: string
-  ): Promise<IUser | null> {
+  ): Promise<User | null> {
     return await this.userModel.findByCredentials(email, password);
   }
 
   async update(
     userId: Types.ObjectId,
-    updateData: Partial<IUser>
-  ): Promise<IUser | null> {
+    updateData: Partial<User>
+  ): Promise<User | null> {
     return this.userModel.findByIdAndUpdate(userId, updateData, { new: true });
   }
 }

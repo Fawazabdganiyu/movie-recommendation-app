@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
-import { IUser, IUserModel, UserDocument } from '../interfaces';
+import { IUserModel, UserDocument } from '../types';
 import { PasswordUtils } from '../utils/password/password.util';
+import { User } from '@shared/types';
 
 // User schema
 const userSchema = new Schema<UserDocument>(
@@ -165,7 +166,7 @@ const userSchema = new Schema<UserDocument>(
 // userSchema.index({ watchlist: 1 });
 
 // Virtual for full name
-userSchema.virtual('fullName').get(function (this: IUser) {
+userSchema.virtual('fullName').get(function (this: User) {
   if (this.firstName && this.lastName) {
     return `${this.firstName} ${this.lastName}`;
   }
@@ -173,7 +174,7 @@ userSchema.virtual('fullName').get(function (this: IUser) {
 });
 
 // Pre-save middleware to hash password
-userSchema.pre<IUser>('save', async function (next) {
+userSchema.pre<User>('save', async function (next) {
   // Only hash the password if it has been modified (or is new)
   if (!(this as any).isModified('password')) return next();
 
@@ -203,7 +204,7 @@ userSchema.methods.generatePasswordResetToken = function (): string {
 };
 
 // Instance method to get public profile
-userSchema.methods.getPublicProfile = function (): Partial<IUser> {
+userSchema.methods.getPublicProfile = function (): Partial<User> {
   return {
     _id: this._id,
     username: this.username,
@@ -219,7 +220,7 @@ userSchema.methods.getPublicProfile = function (): Partial<IUser> {
 userSchema.statics.findByCredentials = async function (
   email: string,
   password: string
-): Promise<IUser | null> {
+): Promise<User | null> {
   const user = await this.findOne({ email, isActive: true }).select(
     '+password'
   );

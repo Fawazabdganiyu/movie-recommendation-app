@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 import { UserRepository } from '../repositories/user.repository';
-import { IUser, IUserRating } from '../interfaces';
+import { User, UserRating } from '@shared/types';
 import { NotFoundError } from '../errors/api.error';
 
 export class UserService {
@@ -16,14 +16,14 @@ export class UserService {
   }
 
   async create(
-    userData: Omit<IUser, '_id' | 'createdAt' | 'updatedAt'>
-  ): Promise<IUser> {
+    userData: Omit<User, '_id' | 'createdAt' | 'updatedAt'>
+  ): Promise<User> {
     const user = await this.userRepository.create(userData);
 
     return user;
   }
 
-  async getByCredentials(email: string, password: string): Promise<IUser> {
+  async getByCredentials(email: string, password: string): Promise<User> {
     const user = await this.userRepository.findByCredentials(email, password);
     if (!user) {
       throw new NotFoundError('User not found or invalid credentials');
@@ -32,14 +32,14 @@ export class UserService {
     return user;
   }
 
-  async getById(userId: Types.ObjectId): Promise<IUser> {
+  async getById(userId: Types.ObjectId): Promise<User> {
     const user = await this.userRepository.findById(userId);
     if (!user) throw new NotFoundError(`User with ID ${userId} not found`);
 
     return user;
   }
 
-  async getByEmail(email: string): Promise<IUser> {
+  async getByEmail(email: string): Promise<User> {
     const user = await this.userRepository.findByEmail(email);
     if (!user) throw new NotFoundError(`User with email ${email} not found`);
 
@@ -55,7 +55,7 @@ export class UserService {
     return user.firstName || user.lastName || user.username;
   }
 
-  async getPublicProfile(userId: Types.ObjectId): Promise<Partial<IUser>> {
+  async getPublicProfile(userId: Types.ObjectId): Promise<Partial<User>> {
     const user = await this.getById(userId);
 
     return {
@@ -71,8 +71,8 @@ export class UserService {
 
   async update(
     userId: Types.ObjectId,
-    updateData: Partial<IUser>
-  ): Promise<IUser> {
+    updateData: Partial<User>
+  ): Promise<User> {
     // Remove sensitive fields from update data
     if (updateData.email) delete updateData.email;
     if (updateData.password) delete updateData.password;
@@ -113,7 +113,7 @@ export class UserService {
       (r) => r.movieId === movieId
     );
 
-    const newRating: IUserRating = {
+    const newRating: UserRating = {
       movieId,
       rating,
       review,
@@ -137,7 +137,7 @@ export class UserService {
       (r) => r.movieId === movieId
     );
 
-    const newRating: IUserRating = {
+    const newRating: UserRating = {
       movieId,
       rating,
       review,

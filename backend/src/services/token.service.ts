@@ -1,12 +1,8 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
 import { config } from '../config';
-import { IUser } from '../interfaces';
+import { AuthTokens, User } from '@shared/types';
 import { TokenType } from '../enums/token.enum';
-import {
-  DecodedToken,
-  TokenPair,
-  TokenPayload,
-} from '../interfaces/services/token.service.interface';
+import { DecodedToken, TokenPayload } from '../types/auth';
 import { AuthorizationError } from '../errors/api.error';
 
 export class TokenService {
@@ -33,7 +29,7 @@ export class TokenService {
   /**
    * Generate access token for user
    */
-  generateAccessToken(user: IUser): string {
+  generateAccessToken(user: User): string {
     const payload: TokenPayload = {
       userId: user._id.toString(),
       email: user.email,
@@ -51,7 +47,7 @@ export class TokenService {
   /**
    * Generate refresh token for user
    */
-  generateRefreshToken(user: IUser): string {
+  generateRefreshToken(user: User): string {
     const payload: TokenPayload = {
       userId: user._id.toString(),
       email: user.email,
@@ -69,7 +65,7 @@ export class TokenService {
   /**
    * Generate both access and refresh tokens
    */
-  generateTokenPair(user: IUser): TokenPair {
+  generateTokenPair(user: User): AuthTokens {
     return {
       accessToken: this.generateAccessToken(user),
       refreshToken: this.generateRefreshToken(user),

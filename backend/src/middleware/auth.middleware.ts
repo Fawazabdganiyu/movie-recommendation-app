@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { Types } from 'mongoose';
 import { getTokenService, getUserService } from '../container';
-import { AuthMiddlewareOptions, DecodedToken, IUser } from '../interfaces';
+import { AuthMiddlewareOptions, DecodedToken } from '../types';
+import { User } from '@shared/types';
 
 import { AuthenticationError, BadRequestError } from '../errors/api.error';
 
@@ -9,7 +10,7 @@ import { AuthenticationError, BadRequestError } from '../errors/api.error';
 declare global {
   namespace Express {
     interface Request {
-      user?: IUser;
+      user?: User;
       token?: DecodedToken;
     }
   }

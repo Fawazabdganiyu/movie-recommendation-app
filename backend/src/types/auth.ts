@@ -1,4 +1,4 @@
-import { TokenType } from '../../enums/token.enum';
+import { TokenType } from '../enums/token.enum';
 
 export interface TokenPayload {
   userId: string;
@@ -14,8 +14,4 @@ export interface DecodedToken {
   type: TokenType;
   iat: number;
   exp: number;
-}
-export interface TokenPair {
-  accessToken: string;
-  refreshToken: string;
 }

@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { getAuthService } from '../container';
 import { success } from '../utils/response.util';
-import { BadRequestError } from '../errors/api.error';
-import { IUser } from '../interfaces';
+import { User } from '@shared/types';
+import { Types } from 'mongoose';
 
 export class AuthController {
   private static instance: AuthController;
@@ -15,6 +15,7 @@ export class AuthController {
 
   register = async (req: Request, res: Response, next: NextFunction) => {
     try {
+      // req.body is now validated and transformed by Zod middleware
       await getAuthService().register(req.body);
       success(
         res,
@@ -29,9 +30,7 @@ export class AuthController {
 
   login = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (!req.body || !req.body.email || !req.body.password)
-        throw new BadRequestError('Email and password are required');
-
+      // req.body is now validated by Zod middleware
       const { email, password } = req.body;
       const result = await getAuthService().login(email, password);
       success(res, 'Login successful', result);
@@ -42,8 +41,9 @@ export class AuthController {
 
   refresh = async (req: Request, res: Response, next: NextFunction) => {
     try {
+      // req.body is now validated by Zod middleware
       const { refreshToken } = req.body;
-      const user = req.user as IUser;
+      const user = req.user as User;
       const accessToken = await getAuthService().getRefreshToken(user);
       const data = { user, tokens: { accessToken, refreshToken } };
 
@@ -55,7 +55,7 @@ export class AuthController {
 
   logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await getAuthService().logout(req.user!._id);
+      await getAuthService().logout(req.user!._id as Types.ObjectId);
       success(res, 'Logout successful');
     } catch (e) {
       next(e);

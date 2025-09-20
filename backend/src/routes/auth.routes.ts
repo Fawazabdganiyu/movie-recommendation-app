@@ -1,18 +1,45 @@
 import { Router } from 'express';
 import { requireAuth, validateRefreshToken } from '../middleware';
 import { authController } from '../controllers/auth.controller';
+import { validateBody } from '../middleware/zod-validation.middleware';
+import { loginSchema, registerSchema, refreshTokenSchema } from '@shared/types';
 
 const router = Router();
 
-// Public routes
-router.post('/register', authController.register);
+/**
+ * Authentication Routes with Zod Validation
+ *
+ * Each route now uses appropriate Zod validation middleware
+ * instead of manual validation in controllers
+ */
 
-router.post('/login', authController.login);
+// POST /auth/register - Register new user
+router.post(
+  '/register',
+  validateBody(registerSchema), // Validates: name, email, password with proper constraints
+  authController.register
+);
 
-// Refresh token route
-router.post('/refresh', validateRefreshToken, authController.refresh);
+// POST /auth/login - User login
+router.post(
+  '/login',
+  validateBody(loginSchema), // Validates: email, password with proper formatting
+  authController.login
+);
 
-// Protected routes
-router.post('/logout', requireAuth, authController.logout);
+// POST /auth/refresh - Refresh access token
+router.post(
+  '/refresh',
+  validateBody(refreshTokenSchema), // Validates: refreshToken is present
+  validateRefreshToken, // Verify the refresh token
+  authController.refresh
+);
+
+// POST /auth/logout - User logout
+router.post(
+  '/logout',
+  requireAuth, // Requires valid access token
+  authController.logout
+);
 
 export default router;

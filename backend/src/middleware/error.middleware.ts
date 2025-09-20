@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { ZodError } from 'zod';
 
 // Handle 404 Not Found for invalid routes
 export const notFoundHandler = (req: Request, res: Response) => {
@@ -15,6 +16,9 @@ export const errorHandler = (
   res: Response,
   _next: NextFunction
 ) => {
+  let errorMessage = error.message;
+  let err = `${error.error}${error.errors?.length ? ' - ' + error.errors.join(', ') : ''}`;
+
   // Log the error details
   console.error('Request Error', {
     error: {
@@ -31,18 +35,27 @@ export const errorHandler = (
     (error as any).status === 400 &&
     'body' in error
   ) {
-    return res.status(400).json({
-      success: false,
-      error: 'Bad Request',
-      message: 'Invalid JSON format in request body',
-    });
+    errorMessage = error.message || 'Invalid JSON format in request body';
+  }
+
+  if (error instanceof ZodError) {
+    // Format Zod validation errors into user-friendly messages
+    const errors = error.issues.map((issue) => ({
+      field: issue.path.join('.'),
+      message: issue.message,
+      value: 'input' in issue ? issue.input : undefined,
+    }));
+
+    errorMessage = errors
+      .map((err) => `${err.field}: ${err.message}`)
+      .join(', ');
+
+    errorMessage = `Validation failed: ${errorMessage}`;
   }
 
   res.status(error.status || 500).json({
     success: false,
-    error:
-      `${error.error}${error.errors?.length ? ' - ' + error.errors.join(', ') : ''}` ||
-      'Internal Server Error',
-    message: error.message || 'An unexpected error occurred',
+    error: err || 'Internal Server Error',
+    message: errorMessage || 'An unexpected error occurred',
   });
 };
