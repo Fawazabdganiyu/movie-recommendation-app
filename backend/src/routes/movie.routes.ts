@@ -3,34 +3,57 @@ import { MovieController } from '../controllers/movie.controller';
 import {
   validateQuery,
   validateParams,
+  validateBody,
 } from '../middleware/zod-validation.middleware';
 import {
   movieSearchSchema,
   movieFilterSchema,
   movieRecommendationsSchema,
-} from '../validation/movie.validation';
-import { optionalAuth } from '../middleware/auth.middleware';
-import { getTmdbService } from '../container';
-import { numericIdParamSchema } from '../validation';
+  movieIdParamSchema,
+  numericIdParamSchema,
+} from '../validation';
+import { optionalAuth, requireAuth } from '../middleware/auth.middleware';
+import { getRatingReviewService, getTmdbService } from '../container';
+import { createOrUpdateRatingSchema } from '@shared/validation';
 
 const router = Router();
-const movieController = MovieController.getInstance(getTmdbService());
+const movieController = MovieController.getInstance(
+  getTmdbService(),
+  getRatingReviewService()
+);
 
-// GET /api/movies/search - Search for movies by query
+// POST /api/v1/movies/:movieId/rate-review - Rate a movie
+router.post(
+  '/:movieId/rate-review',
+  requireAuth,
+  validateParams(movieIdParamSchema),
+  validateBody(createOrUpdateRatingSchema),
+  movieController.submitRatingReview
+);
+
+// GET /api/v1/movies/:movieId/ratings-reviews
+router.get(
+  '/:movieId/ratings-reviews',
+  requireAuth,
+  validateParams(movieIdParamSchema),
+  movieController.submitRatingReview
+);
+
+// GET /api/v1/movies/search - Search for movies by query
 router.get(
   '/search',
   validateQuery(movieSearchSchema),
   movieController.searchMovies
 );
 
-// GET /api/movies/filter - Filter movies by criteria
+// GET /api/v1/movies/filter - Filter movies by criteria
 router.get(
   '/filter',
   validateQuery(movieFilterSchema),
   movieController.filterMovies
 );
 
-// GET /api/movies/recommendations - Get personalized recommendations
+// GET /api/v1/movies/recommendations - Get personalized recommendations
 router.get(
   '/recommendations',
   optionalAuth,
@@ -38,11 +61,20 @@ router.get(
   movieController.getRecommendations
 );
 
-// GET /api/movies/:id - Get movie details by ID
+// GET /api/v1/movies/:id - Get movie details by ID
 router.get(
   '/:id',
   validateParams(numericIdParamSchema),
   movieController.getMovieDetails
+);
+
+// PATCH /api/v1/movies/:movieId/rate-review
+router.patch(
+  '/:movieId/rate-review',
+  requireAuth,
+  validateParams(movieIdParamSchema),
+  validateBody(createOrUpdateRatingSchema),
+  movieController.submitRatingReview
 );
 
 export default router;

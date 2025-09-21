@@ -3,9 +3,9 @@ import { requireAuth, validateRefreshToken } from '../middleware';
 import { AuthController } from '../controllers/auth.controller';
 import { validateBody } from '../middleware/zod-validation.middleware';
 import {
-  loginSchema,
   registerSchema,
   refreshTokenSchema,
+  loginSchema,
 } from '@shared/validation';
 import { getAuthService } from '../container';
 

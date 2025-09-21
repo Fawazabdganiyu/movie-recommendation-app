@@ -56,3 +56,15 @@ export interface RecommendationResponse {
   reason: string;
   confidence: number;
 }
+
+/**
+ * User Rating for a Movie
+ */
+export interface UserRatingReview {
+  _id?: string;
+  movieId: number;
+  rating?: number; // 1-10 scale
+  review?: string;
+  createdAt: Date | string;
+  updatedAt?: Date | string;
+}

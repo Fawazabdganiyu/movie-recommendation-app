@@ -3,21 +3,34 @@ import {
   MovieSearchInput,
   MovieFilterInput,
   MovieRecommendationsInput,
+  RatingReview,
 } from '../types';
 import { success } from '../utils/response.util';
 import { getUserService } from '../container';
 import { Types } from 'mongoose';
 import { ExternalServiceError } from '../errors/api.error';
 import { TMDBService } from '../services/tmdb.service';
+import { RatingReviewService } from '../services/rating-review.service';
 
 export class MovieController {
   private static instance: MovieController;
-  private constructor(private movieService: TMDBService) {
+
+  private constructor(
+    private movieService: TMDBService,
+    private ratingReviewService: RatingReviewService
+  ) {
     this.movieService = movieService;
+    this.ratingReviewService = ratingReviewService;
   }
-  static getInstance(movieService: TMDBService): MovieController {
+  static getInstance(
+    movieService: TMDBService,
+    ratingService: RatingReviewService
+  ): MovieController {
     if (!MovieController.instance)
-      MovieController.instance = new MovieController(movieService);
+      MovieController.instance = new MovieController(
+        movieService,
+        ratingService
+      );
     return MovieController.instance;
   }
 
@@ -150,4 +163,77 @@ export class MovieController {
       next(error);
     }
   };
+
+  async submitRatingReview(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { movieId } = req.params;
+      const { rating, review } = req.body;
+      const userId = req.user?._id as Types.ObjectId;
+
+      const data = {
+        movieId: Number(movieId),
+        userId,
+      } as RatingReview;
+      if (rating) data['rating'] = rating;
+      if (review) data['review'] = review;
+
+      const bothPresent = rating && review;
+      const target = bothPresent
+        ? 'Rating and Review'
+        : rating
+          ? 'Rating'
+          : 'Review';
+
+      const newRating = await this.ratingReviewService.createRatingReview(data);
+
+      return success(res, `${target} submitted successfully`, newRating);
+    } catch (error: any) {
+      next(error);
+    }
+  }
+
+  async updateRatingReview(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { movieId } = req.params;
+      const { rating, review } = req.body;
+      const userId = req.user?._id;
+
+      const data = {
+        movieId: Number(movieId),
+        userId,
+      } as RatingReview;
+      if (rating) data['rating'] = rating;
+      if (review) data['review'] = review;
+
+      const bothPresent = rating && review;
+      const target = bothPresent
+        ? 'Rating and Review'
+        : rating
+          ? 'Rating'
+          : 'Review';
+
+      const updatedReview =
+        await this.ratingReviewService.updateRatingReview(data);
+
+      return success(res, `${target} updated successfully`, updatedReview);
+    } catch (error: any) {
+      next(error);
+    }
+  }
+
+  async getMovieRatingsReviews(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const { movieId } = req.params as unknown as { movieId: number };
+      const reviews =
+        await this.ratingReviewService.getMovieRatingsReviews(movieId);
+
+      return success(res, 'Reviews fetched successfully', reviews);
+    } catch (error: any) {
+      next(error);
+    }
+  }
 }

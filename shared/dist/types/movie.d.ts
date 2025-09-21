@@ -51,4 +51,15 @@ export interface RecommendationResponse {
     reason: string;
     confidence: number;
 }
+/**
+ * User Rating for a Movie
+ */
+export interface UserRatingReview {
+    _id?: string;
+    movieId: number;
+    rating?: number;
+    review?: string;
+    createdAt: Date | string;
+    updatedAt?: Date | string;
+}
 //# sourceMappingURL=movie.d.ts.map

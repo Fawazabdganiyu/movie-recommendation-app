@@ -1,30 +1,4 @@
-/// <reference types="mongoose/types/aggregate" />
-/// <reference types="mongoose/types/callback" />
-/// <reference types="mongoose/types/collection" />
-/// <reference types="mongoose/types/connection" />
-/// <reference types="mongoose/types/cursor" />
-/// <reference types="mongoose/types/document" />
-/// <reference types="mongoose/types/error" />
-/// <reference types="mongoose/types/expressions" />
-/// <reference types="mongoose/types/helpers" />
-/// <reference types="mongoose/types/middlewares" />
-/// <reference types="mongoose/types/indexes" />
-/// <reference types="mongoose/types/models" />
-/// <reference types="mongoose/types/mongooseoptions" />
-/// <reference types="mongoose/types/pipelinestage" />
-/// <reference types="mongoose/types/populate" />
-/// <reference types="mongoose/types/query" />
-/// <reference types="mongoose/types/schemaoptions" />
-/// <reference types="mongoose/types/session" />
-/// <reference types="mongoose/types/types" />
-/// <reference types="mongoose/types/utility" />
-/// <reference types="mongoose/types/validation" />
-/// <reference types="mongoose/types/virtuals" />
-/// <reference types="mongoose/types/schematypes" />
-/// <reference types="mongoose/types/inferschematype" />
-/// <reference types="mongoose/types/inferrawdoctype" />
-import { Types } from 'mongoose';
-import { z } from 'zod';
+import { Types } from "mongoose";
 /**
  * User Preference Settings
  */
@@ -34,17 +8,6 @@ export interface UserPreferences {
     languages: string[];
     minRating: number;
     explicitContent: boolean;
-}
-/**
- * User Rating for a Movie
- */
-export interface UserRating {
-    _id?: string;
-    movieId: number;
-    rating: number;
-    review?: string;
-    createdAt: Date | string;
-    updatedAt?: Date | string;
 }
 /**
  * Complete User Interface (Backend)
@@ -62,7 +25,6 @@ export interface User {
     preferences: UserPreferences;
     favorites: number[];
     watchlist: number[];
-    ratings: UserRating[];
     isEmailVerified: boolean;
     emailVerificationToken?: string;
     passwordResetToken?: string;
@@ -87,7 +49,6 @@ export interface PublicUser {
     preferences: UserPreferences;
     favorites: number[];
     watchlist: number[];
-    ratings: UserRating[];
     isEmailVerified: boolean;
     isActive: boolean;
     createdAt: string;
@@ -110,19 +71,6 @@ export interface PasswordChangeRequest {
     currentPassword: string;
     newPassword: string;
 }
-/**
- * User Validation Schemas
- */
-export declare const userUpdateSchema: z.ZodObject<{
-    firstName: z.ZodOptional<z.ZodString>;
-    lastName: z.ZodOptional<z.ZodString>;
-    username: z.ZodOptional<z.ZodString>;
-    avatar: z.ZodOptional<z.ZodString>;
-}, z.core.$strip>;
-export declare const passwordChangeSchema: z.ZodObject<{
-    currentPassword: z.ZodString;
-    newPassword: z.ZodString;
-}, z.core.$strip>;
 /**
  * User Statistics (for dashboard/analytics)
  */

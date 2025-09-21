@@ -1,13 +1,14 @@
-import { Schema, model, Types } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { WatchlistDocument } from '../types';
 
-const WatchlistSchema = new Schema<WatchlistDocument>({
-  userId: { type: Types.ObjectId, ref: 'User', required: true },
-  name: { type: String, required: true },
-  movies: [{ type: Number }], // TMDB movie IDs
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-});
+const WatchlistSchema = new Schema<WatchlistDocument>(
+  {
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    name: { type: String, required: true },
+    movies: [{ type: Number }], // TMDB movie IDs
+  },
+  { timestamps: true, versionKey: false }
+);
 
 export const WatchlistModel = model<WatchlistDocument>(
   'Watchlist',

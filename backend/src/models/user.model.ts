@@ -86,29 +86,6 @@ const userSchema = new Schema<UserDocument>(
       },
     ],
 
-    ratings: [
-      {
-        movieId: {
-          type: Number,
-          required: true,
-        },
-        rating: {
-          type: Number,
-          required: true,
-          min: [1, 'Rating must be at least 1'],
-          max: [10, 'Rating cannot exceed 10'],
-        },
-        review: {
-          type: String,
-          maxlength: [1000, 'Review cannot exceed 1000 characters'],
-        },
-        createdAt: {
-          type: Date,
-          default: Date.now,
-        },
-      },
-    ],
-
     isEmailVerified: {
       type: Boolean,
       default: false,

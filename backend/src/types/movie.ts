@@ -1,4 +1,4 @@
-import { Document, ObjectId } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { z } from 'zod';
 import {
   movieFilterSchema,
@@ -13,9 +13,20 @@ export type MovieRecommendationsInput = z.infer<
 >;
 
 export interface WatchlistDocument extends Document {
-  userId: ObjectId;
+  userId: Types.ObjectId;
   name: string;
   movies: number[]; // Array of TMDB movie IDs
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface RatingReview {
+  movieId: number;
+  userId: Types.ObjectId;
+  rating?: number;
+  review?: string;
+}
+export interface RatingReviewDocument extends RatingReview, Document {
   createdAt: Date;
   updatedAt: Date;
 }

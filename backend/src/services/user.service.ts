@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 import { UserRepository } from '../repositories/user.repository';
-import { User, UserRating } from '@shared/types';
+import { User } from '@shared/types';
 import { NotFoundError } from '../errors/api.error';
 
 export class UserService {
@@ -117,55 +117,5 @@ export class UserService {
       throw new NotFoundError(`User with ID ${userId} not found`);
 
     return updatedUser;
-  }
-
-  async addRating(
-    userId: Types.ObjectId,
-    movieId: number,
-    rating: number,
-    review?: string
-  ): Promise<void> {
-    const user = await this.getById(userId);
-    const existingRatingIndex = user.ratings.findIndex(
-      (r) => r.movieId === movieId
-    );
-
-    const newRating: UserRating = {
-      movieId,
-      rating,
-      review,
-      createdAt: new Date(),
-    };
-
-    if (existingRatingIndex >= 0) {
-      user.ratings[existingRatingIndex] = newRating;
-    } else {
-      user.ratings.push(newRating);
-    }
-  }
-
-  async updateRating(
-    userId: Types.ObjectId,
-    movieId: number,
-    rating: number,
-    review?: string
-  ): Promise<void> {
-    const user = await this.getById(userId);
-    const existingRatingIndex = user.ratings.findIndex(
-      (r) => r.movieId === movieId
-    );
-
-    const newRating: UserRating = {
-      movieId,
-      rating,
-      review,
-      createdAt: new Date(),
-    };
-
-    if (existingRatingIndex >= 0) {
-      user.ratings[existingRatingIndex] = newRating;
-    } else {
-      user.ratings.push(newRating);
-    }
   }
 }

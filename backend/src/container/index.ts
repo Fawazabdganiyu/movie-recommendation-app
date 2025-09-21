@@ -11,9 +11,13 @@ import { TMDBService } from '../services/tmdb.service';
 import { WatchlistService } from '../services/watchlist.service';
 import { WatchlistRepository } from '../repositories/watchlist.repository';
 import { WatchlistModel } from '../models/watchlist.model';
+import { RatingReviewRepository } from '../repositories/rating-review.repository';
+import { RatingReviewService } from '../services/rating-review.service';
+import RatingReviewModel from '../models/rating-review.model';
 
 let _userRepository: UserRepository | undefined;
 let _watchlistRepository: WatchlistRepository | undefined;
+let _ratingReviewRepository: RatingReviewRepository | undefined;
 
 let _tokenService: TokenService | undefined;
 let _userService: UserService | undefined;
@@ -22,6 +26,7 @@ let _dbConnection: DatabaseConnection | undefined;
 
 let _tmdbService: TMDBService | undefined;
 let _watchlistService: WatchlistService | undefined;
+let _rateingReviewService: RatingReviewService | undefined;
 
 const getUserRepository = (): UserRepository => {
   return (_userRepository ||= UserRepository.getInstance(UserModel));
@@ -30,6 +35,11 @@ const getUserRepository = (): UserRepository => {
 const getWatchlistRepository = (): WatchlistRepository => {
   return (_watchlistRepository ||=
     WatchlistRepository.getInstance(WatchlistModel));
+};
+
+const getRatingsReviewRepository = (): RatingReviewRepository => {
+  return (_ratingReviewRepository ||=
+    RatingReviewRepository.getInstance(RatingReviewModel));
 };
 
 // Public accessors (idempotent)
@@ -59,5 +69,11 @@ export const getTmdbService = (): TMDBService => {
 export const getWatchlistService = (): WatchlistService => {
   return (_watchlistService ||= WatchlistService.getInstance(
     getWatchlistRepository()
+  ));
+};
+
+export const getRatingReviewService = (): RatingReviewService => {
+  return (_rateingReviewService ||= RatingReviewService.getInstance(
+    getRatingsReviewRepository()
   ));
 };

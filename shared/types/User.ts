@@ -1,5 +1,4 @@
-import { Types } from 'mongoose';
-import { z } from 'zod';
+import { Types } from "mongoose";
 
 /**
  * User Preference Settings
@@ -10,18 +9,6 @@ export interface UserPreferences {
   languages: string[]; // ISO language codes
   minRating: number; // Minimum rating filter (1-10)
   explicitContent: boolean; // Allow adult content
-}
-
-/**
- * User Rating for a Movie
- */
-export interface UserRating {
-  _id?: string;
-  movieId: number;
-  rating: number; // 1-10 scale
-  review?: string;
-  createdAt: Date | string;
-  updatedAt?: Date | string;
 }
 
 /**
@@ -40,7 +27,6 @@ export interface User {
   preferences: UserPreferences;
   favorites: number[]; // Movie IDs
   watchlist: number[]; // Movie IDs
-  ratings: UserRating[];
   isEmailVerified: boolean;
   emailVerificationToken?: string;
   passwordResetToken?: string;
@@ -66,7 +52,6 @@ export interface PublicUser {
   preferences: UserPreferences;
   favorites: number[];
   watchlist: number[];
-  ratings: UserRating[];
   isEmailVerified: boolean;
   isActive: boolean;
   createdAt: string; // Dates as strings for JSON serialization
@@ -91,21 +76,6 @@ export interface PasswordChangeRequest {
   currentPassword: string;
   newPassword: string;
 }
-
-/**
- * User Validation Schemas
- */
-export const userUpdateSchema = z.object({
-  firstName: z.string().min(1).optional(),
-  lastName: z.string().min(1).optional(),
-  username: z.string().min(3).max(30).optional(),
-  avatar: z.string().url().optional(),
-});
-
-export const passwordChangeSchema = z.object({
-  currentPassword: z.string().min(6),
-  newPassword: z.string().min(6),
-});
 
 /**
  * User Statistics (for dashboard/analytics)
