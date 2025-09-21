@@ -45,4 +45,35 @@ export class UserRepository {
   ): Promise<User | null> {
     return this.userModel.findByIdAndUpdate(userId, updateData, { new: true });
   }
+
+  /**
+   * Add a movie to user's favorites.
+   */
+  async addFavoriteMovie(
+    userId: Types.ObjectId,
+    movieId: number
+  ): Promise<User | null> {
+    // Use $addToSet to avoid duplicates
+    const updatedUser = await this.userModel.findByIdAndUpdate(
+      userId,
+      { $addToSet: { favorites: movieId } },
+      { new: true }
+    );
+    return updatedUser;
+  }
+
+  /**
+   * Remove a movie from user's favorites.
+   */
+  async removeFavoriteMovie(
+    userId: Types.ObjectId,
+    movieId: number
+  ): Promise<User | null> {
+    const updatedUser = await this.userModel.findByIdAndUpdate(
+      userId,
+      { $pull: { favorites: movieId } },
+      { new: true }
+    );
+    return updatedUser;
+  }
 }

@@ -85,21 +85,38 @@ export class UserService {
     return updatedUser;
   }
 
-  async addToFavorites(userId: Types.ObjectId, movieId: number): Promise<void> {
-    const user = await this.getById(userId);
-    if (!user.favorites.includes(movieId)) {
-      user.favorites.push(movieId);
-    }
-  }
-
-  async removeFromFavorites(
+  /**
+   * Add a movie to user's favorites.
+   */
+  async addFavoriteMovie(
     userId: Types.ObjectId,
     movieId: number
-  ): Promise<void> {
-    const user = await this.getById(userId);
-    if (user.favorites.includes(movieId)) {
-      user.favorites = user.favorites.filter((id) => id !== movieId);
-    }
+  ): Promise<User | null> {
+    const updatedUser = await this.userRepository.addFavoriteMovie(
+      userId,
+      movieId
+    );
+    if (!updatedUser)
+      throw new NotFoundError(`User with ID ${userId} not found`);
+
+    return updatedUser;
+  }
+
+  /**
+   * Remove a movie from user's favorites.
+   */
+  async removeFavoriteMovie(
+    userId: Types.ObjectId,
+    movieId: number
+  ): Promise<User | null> {
+    const updatedUser = await this.userRepository.removeFavoriteMovie(
+      userId,
+      movieId
+    );
+    if (!updatedUser)
+      throw new NotFoundError(`User with ID ${userId} not found`);
+
+    return updatedUser;
   }
 
   async addRating(
@@ -126,6 +143,7 @@ export class UserService {
       user.ratings.push(newRating);
     }
   }
+
   async updateRating(
     userId: Types.ObjectId,
     movieId: number,
