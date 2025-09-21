@@ -45,10 +45,11 @@ export class UserController {
     next: NextFunction
   ) => {
     try {
-      const { userId, movieId } = req.params;
+      const { movieId } = req.params;
+      const userId = req.user?._id as Types.ObjectId;
 
       const updatedUser = await this.userService.addFavoriteMovie(
-        new Types.ObjectId(userId),
+        userId,
         Number(movieId)
       );
       if (!updatedUser) throw new NotFoundError('User not found');
@@ -64,10 +65,11 @@ export class UserController {
     next: NextFunction
   ) => {
     try {
-      const { userId, movieId } = req.params;
+      const { movieId } = req.params;
+      const userId = req.user?._id as Types.ObjectId;
 
       const updatedUser = await this.userService.removeFavoriteMovie(
-        new Types.ObjectId(userId),
+        userId,
         Number(movieId)
       );
       if (!updatedUser) throw new NotFoundError('User not found');
@@ -88,9 +90,9 @@ export class UserController {
     next: NextFunction
   ) => {
     try {
-      const { userId } = req.params;
+      const userId = req.user?._id as Types.ObjectId;
 
-      const user = await this.userService.getById(new Types.ObjectId(userId));
+      const user = await this.userService.getById(userId);
       if (!user) throw new NotFoundError('User not found');
 
       return success(res, 'Favorite movies fetched', user.favorites);

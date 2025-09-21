@@ -7,54 +7,51 @@ import {
   watchlistIdParamSchema,
   createWatchlistSchema,
   updateWatchlistSchema,
-  userIdParamSchema,
   movieIdParamSchema,
 } from '../validation';
 import { WatchlistController } from '../controllers/watchlist.controller';
 import { getWatchlistService } from '../container';
+import { requireAuth } from '../middleware';
 
 const router = Router();
 const controller = WatchlistController.getInstance(getWatchlistService());
 
 router.post(
-  '/:userId/watchlists',
-  validateParams(userIdParamSchema),
+  '/watchlists',
+  requireAuth,
   validateBody(createWatchlistSchema),
   controller.createWatchlist
 );
-router.get('/:userId/watchlists', controller.getUserWatchlists);
+router.get('/watchlists', requireAuth, controller.getUserWatchlists);
 router.get(
-  '/:userId/watchlists/:watchlistId',
-  validateParams(userIdParamSchema.extend(watchlistIdParamSchema.shape)),
+  '/watchlists/:watchlistId',
+  requireAuth,
+  validateParams(watchlistIdParamSchema),
   controller.getWatchlistById
 );
 router.put(
-  '/:userId/watchlists/:watchlistId',
-  validateParams(userIdParamSchema.extend(watchlistIdParamSchema.shape)),
+  '/watchlists/:watchlistId',
+  requireAuth,
+  validateParams(watchlistIdParamSchema),
   validateBody(updateWatchlistSchema),
   controller.updateWatchlist
 );
 router.delete(
-  '/:userId/watchlists/:watchlistId',
-  validateParams(userIdParamSchema.extend(watchlistIdParamSchema.shape)),
+  '/watchlists/:watchlistId',
+  requireAuth,
+  validateParams(watchlistIdParamSchema),
   controller.deleteWatchlist
 );
 router.post(
-  '/:userId/watchlists/:watchlistId/movies/:movieId',
-  validateParams(
-    userIdParamSchema
-      .extend(watchlistIdParamSchema.shape)
-      .extend(movieIdParamSchema.shape)
-  ),
+  '/watchlists/:watchlistId/movies/:movieId',
+  requireAuth,
+  validateParams(watchlistIdParamSchema.extend(movieIdParamSchema.shape)),
   controller.addMovieToWatchlist
 );
 router.delete(
-  '/:userId/watchlists/:watchlistId/movies/:movieId',
-  validateParams(
-    userIdParamSchema
-      .extend(watchlistIdParamSchema.shape)
-      .extend(movieIdParamSchema.shape)
-  ),
+  '/watchlists/:watchlistId/movies/:movieId',
+  requireAuth,
+  validateParams(watchlistIdParamSchema.extend(movieIdParamSchema.shape)),
   controller.removeMovieFromWatchlist
 );
 

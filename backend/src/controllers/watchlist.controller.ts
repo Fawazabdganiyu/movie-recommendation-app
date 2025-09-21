@@ -19,10 +19,10 @@ export class WatchlistController {
 
   createWatchlist = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { userId } = req.params;
+      const userId = req.user?._id as Types.ObjectId;
       const { name } = req.body;
       const watchlist = await this.watchlistService.createWatchlist(
-        new Types.ObjectId(userId),
+        userId,
         name
       );
       return success(res, 'Watchlist created', watchlist);
@@ -37,11 +37,9 @@ export class WatchlistController {
     next: NextFunction
   ) => {
     try {
-      const { userId } = req.params;
+      const userId = req.user?._id as Types.ObjectId;
 
-      const watchlists = await this.watchlistService.getUserWatchlists(
-        new Types.ObjectId(userId)
-      );
+      const watchlists = await this.watchlistService.getUserWatchlists(userId);
 
       return success(res, 'User watchlists fetched', watchlists);
     } catch (error) {
