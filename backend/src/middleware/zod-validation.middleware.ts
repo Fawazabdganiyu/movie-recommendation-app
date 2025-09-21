@@ -35,19 +35,20 @@ export const validate = (config: ValidationConfig) => {
     try {
       // Validate request body
       if (config.body) {
-        req.body = await config.body.parseAsync(req.body);
+        const validatedBody = await config.body.parseAsync(req.body);
+        Object.assign(req.body, validatedBody);
       }
 
       // Validate request params
       if (config.params) {
         const validatedParams = await config.params.parseAsync(req.params);
-        req.params = validatedParams as typeof req.params;
+        Object.assign(req.params, validatedParams);
       }
 
       // Validate request query
       if (config.query) {
         const validatedQuery = await config.query.parseAsync(req.query);
-        req.query = validatedQuery as typeof req.query;
+        Object.assign(req.query, validatedQuery);
       }
 
       next();

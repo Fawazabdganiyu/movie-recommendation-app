@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import { config } from '../config';
 
 const TMDB_API_KEY = config.tmdb.apiKey;
@@ -10,12 +10,18 @@ if (!TMDB_API_KEY) {
 
 export class TMDBService {
   public static instance: TMDBService;
-  private apiKey: string;
-  private baseUrl: string;
+  private api: AxiosInstance;
 
   private constructor() {
-    this.apiKey = TMDB_API_KEY;
-    this.baseUrl = TMDB_BASE_URL;
+    if (!TMDB_API_KEY) {
+      throw new Error('TMDB API key is not configured.');
+    }
+    this.api = axios.create({
+      baseURL: TMDB_BASE_URL,
+      headers: {
+        Authorization: `Bearer ${TMDB_API_KEY}`,
+      },
+    });
   }
 
   public static getInstance(): TMDBService {
@@ -31,9 +37,8 @@ export class TMDBService {
    */
   public async searchMovies(query: string, page: number = 1) {
     try {
-      const response = await axios.get(`${this.baseUrl}/search/movie`, {
+      const response = await this.api.get('/search/movie', {
         params: {
-          api_key: this.apiKey,
           query: query,
           page: page,
           include_adult: false,
@@ -43,7 +48,7 @@ export class TMDBService {
       return response.data;
     } catch (error) {
       console.error('Error searching movies from TMDB');
-      throw error;
+      throw error; // This would be handled properly by the error middleware
     }
   }
 
@@ -54,11 +59,7 @@ export class TMDBService {
    */
   public async getMovieDetails(movieId: number) {
     try {
-      const response = await axios.get(`${this.baseUrl}/movie/${movieId}`, {
-        params: {
-          api_key: this.apiKey,
-        },
-      });
+      const response = await this.api.get(`/movie/${movieId}`);
 
       return response.data;
     } catch (error) {
@@ -93,7 +94,6 @@ export class TMDBService {
       } = params;
 
       const queryParams: any = {
-        api_key: this.apiKey,
         page,
         sort_by: sortBy,
         include_adult: false,
@@ -105,7 +105,7 @@ export class TMDBService {
       if (releaseDateGte) queryParams['release_date.gte'] = releaseDateGte;
       if (releaseDateLte) queryParams['release_date.lte'] = releaseDateLte;
 
-      const response = await axios.get(`${this.baseUrl}/discover/movie`, {
+      const response = await this.api.get('/discover/movie', {
         params: queryParams,
       });
 
@@ -138,7 +138,6 @@ export class TMDBService {
       } = params;
 
       const queryParams: any = {
-        api_key: this.apiKey,
         page,
         sort_by: sortBy,
         include_adult: false,
@@ -154,7 +153,7 @@ export class TMDBService {
         queryParams.without_genres = excludeGenres.join(',');
       }
 
-      const response = await axios.get(`${this.baseUrl}/discover/movie`, {
+      const response = await this.api.get('/discover/movie', {
         params: queryParams,
       });
 
@@ -171,11 +170,7 @@ export class TMDBService {
    */
   public async getGenres() {
     try {
-      const response = await axios.get(`${this.baseUrl}/genre/movie/list`, {
-        params: {
-          api_key: this.apiKey,
-        },
-      });
+      const response = await this.api.get('/genre/movie/list');
 
       return response.data;
     } catch (error) {
