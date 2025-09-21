@@ -1,5 +1,4 @@
-import { z } from 'zod';
-import type { User } from './user';
+import type { User } from "./user";
 /**
  * JWT Token Pair
  */
@@ -28,19 +27,6 @@ export interface RegisterFormData {
     email: string;
     password: string;
 }
-/**
- * Validation Schemas using Zod
- * These can be used on both frontend and backend
- */
-export declare const loginSchema: z.ZodObject<{
-    email: z.ZodString;
-    password: z.ZodString;
-}, z.core.$strip>;
-export declare const registerSchema: z.ZodObject<{
-    name: z.ZodString;
-    email: z.ZodString;
-    password: z.ZodString;
-}, z.core.$strip>;
 /**
  * Password Reset Types
  */

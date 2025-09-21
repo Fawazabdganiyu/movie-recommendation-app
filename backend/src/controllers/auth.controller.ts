@@ -1,22 +1,25 @@
 import { Request, Response, NextFunction } from 'express';
-import { getAuthService } from '../container';
 import { success } from '../utils/response.util';
 import { User } from '@shared/types';
 import { Types } from 'mongoose';
+import { AuthService } from '../services/auth.service';
 
 export class AuthController {
   private static instance: AuthController;
-  private constructor() {}
-  static getInstance(): AuthController {
+  private constructor(private authService: AuthService) {
+    this.authService = authService;
+  }
+
+  static getInstance(authService: AuthService): AuthController {
     if (!AuthController.instance)
-      AuthController.instance = new AuthController();
+      AuthController.instance = new AuthController(authService);
     return AuthController.instance;
   }
 
   register = async (req: Request, res: Response, next: NextFunction) => {
     try {
       // req.body is now validated and transformed by Zod middleware
-      await getAuthService().register(req.body);
+      await this.authService.register(req.body);
 
       return success(
         res,
@@ -33,7 +36,7 @@ export class AuthController {
     try {
       // req.body is now validated by Zod middleware
       const { email, password } = req.body;
-      const result = await getAuthService().login(email, password);
+      const result = await this.authService.login(email, password);
 
       return success(res, 'Login successful', result);
     } catch (e) {
@@ -46,7 +49,7 @@ export class AuthController {
       // req.body is now validated by Zod middleware
       const { refreshToken } = req.body;
       const user = req.user as User;
-      const accessToken = await getAuthService().getRefreshToken(user);
+      const accessToken = await this.authService.getRefreshToken(user);
       const data = { user, tokens: { accessToken, refreshToken } };
 
       return success(res, 'Token refreshed successfully', data);
@@ -57,7 +60,7 @@ export class AuthController {
 
   logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await getAuthService().logout(req.user!._id as Types.ObjectId);
+      await this.authService.logout(req.user!._id as Types.ObjectId);
 
       return success(res, 'Logout successful');
     } catch (e) {
@@ -65,5 +68,3 @@ export class AuthController {
     }
   };
 }
-
-export const authController = AuthController.getInstance();

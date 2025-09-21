@@ -5,7 +5,8 @@
   "type": "module",
   "workspaces": [
     "frontend",
-    "backend"
+    "backend",
+    "shared"
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
@@ -15,6 +16,7 @@
     "build": "npm run build --workspaces",
     "build:backend": "npm run build --workspace=backend",
     "build:frontend": "npm run build --workspace=frontend",
+    "build:shared": "npm run build --workspace=shared",
     "install:all": "npm install",
     "clean": "npm run clean --workspaces",
     "test": "npm run test --workspaces",

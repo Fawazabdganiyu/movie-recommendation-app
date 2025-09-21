@@ -1,0 +1,13 @@
+{
+  "name": "@movie-app/shared",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --build tsconfig.json",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "zod": "^4.1.11"
+  }
+}

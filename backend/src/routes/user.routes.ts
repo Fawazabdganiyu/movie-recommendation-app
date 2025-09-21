@@ -1,12 +1,8 @@
 import { Router } from 'express';
-import {
-  movieIdParamSchema,
-  requireAuth,
-  userIdParamSchema,
-  validateParams,
-} from '../middleware';
+import { requireAuth, validateParams } from '../middleware';
 import { UserController } from '../controllers/user.controller';
 import { getUserService } from '../container';
+import { movieIdParamSchema, userIdParamSchema } from '../validation';
 
 const router = Router();
 const userController = UserController.getInstance(getUserService());

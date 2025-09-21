@@ -5,7 +5,9 @@ import { User } from '@shared/types';
 export class UserRepository {
   private static instance: UserRepository;
 
-  private constructor(private userModel: IUserModel) {}
+  private constructor(private userModel: IUserModel) {
+    this.userModel = userModel;
+  }
 
   public static getInstance(userModel: IUserModel): UserRepository {
     if (!UserRepository.instance) {

@@ -8,8 +8,12 @@ import { UserService } from '../services/user.service';
 import { AuthService } from '../services/auth.service';
 import { DatabaseConnection } from '../config';
 import { TMDBService } from '../services/tmdb.service';
+import { WatchlistService } from '../services/watchlist.service';
+import { WatchlistRepository } from '../repositories/watchlist.repository';
+import { WatchlistModel } from '../models/watchlist.model';
 
 let _userRepository: UserRepository | undefined;
+let _watchlistRepository: WatchlistRepository | undefined;
 
 let _tokenService: TokenService | undefined;
 let _userService: UserService | undefined;
@@ -17,9 +21,15 @@ let _authService: AuthService | undefined;
 let _dbConnection: DatabaseConnection | undefined;
 
 let _tmdbService: TMDBService | undefined;
+let _watchlistService: WatchlistService | undefined;
 
 const getUserRepository = (): UserRepository => {
   return (_userRepository ||= UserRepository.getInstance(UserModel));
+};
+
+const getWatchlistRepository = (): WatchlistRepository => {
+  return (_watchlistRepository ||=
+    WatchlistRepository.getInstance(WatchlistModel));
 };
 
 // Public accessors (idempotent)
@@ -44,4 +54,10 @@ export const getAuthService = (): AuthService => {
 
 export const getTmdbService = (): TMDBService => {
   return (_tmdbService ||= TMDBService.getInstance());
+};
+
+export const getWatchlistService = (): WatchlistService => {
+  return (_watchlistService ||= WatchlistService.getInstance(
+    getWatchlistRepository()
+  ));
 };

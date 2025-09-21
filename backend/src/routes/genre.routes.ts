@@ -1,9 +1,11 @@
 import { Router } from 'express';
-import { getGenres } from '../controllers/movie.controller';
+import { MovieController } from '../controllers/movie.controller';
+import { getTmdbService } from '../container';
 
 const router = Router();
+const movieController = MovieController.getInstance(getTmdbService());
 
 // GET /api/genres - Get all available movie genres
-router.get('/', getGenres);
+router.get('/', movieController.getGenres);
 
 export default router;

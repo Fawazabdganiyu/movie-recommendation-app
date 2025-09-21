@@ -1,5 +1,10 @@
 import { z } from 'zod';
 
+// Movie ID param validation
+export const movieIdParamSchema = z.object({
+  movieId: z.coerce.number().min(1, 'Invalid movie ID'),
+});
+
 export const movieSearchSchema = z.object({
   query: z.string().min(1, 'Search query cannot be empty.'),
   page: z

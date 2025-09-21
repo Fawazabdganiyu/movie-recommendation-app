@@ -192,41 +192,41 @@ The backend implements a comprehensive error handling system:
 ## API Endpoints
 
 ### Authentication Endpoints
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `POST /api/auth/refresh` - Refresh access token
-- `POST /api/auth/logout` - User logout
-- `POST /api/auth/forgot-password` - Request password reset
-- `POST /api/auth/reset-password` - Reset password with token
-- `POST /api/auth/verify-email` - Verify email address
+- `POST /api/v1/auth/register` - User registration
+- `POST /api/v1/auth/login` - User login
+- `POST /api/v1/auth/refresh` - Refresh access token
+- `POST /api/v1/auth/logout` - User logout
+- `POST /api/v1/auth/forgot-password` - Request password reset
+- `POST /api/v1/auth/reset-password` - Reset password with token
+- `POST /api/v1/auth/verify-email` - Verify email address
 
 ### Movie Endpoints
-- `GET /api/movies/search` - Search movies by query
+- `GET /api/v1/movies/search` - Search movies by query
   - Query params: `query` (required), `page` (optional)
-- `GET /api/movies/filter` - Filter movies by criteria
+- `GET /api/v1/movies/filter` - Filter movies by criteria
   - Query params: `genre`, `minRating`, `maxRating`, `releaseDateGte`, `releaseDateLte`, `sortBy`, `page`
-- `GET /api/movies/:id` - Get detailed movie information
+- `GET /api/v1/movies/:id` - Get detailed movie information
   - Path params: `id` (TMDB movie ID)
-- `GET /api/movies/recommendations` - Get personalized recommendations
+- `GET /api/v1/movies/recommendations` - Get personalized recommendations
   - Query params: `genreIds`, `minRating`, `page`
   - Authentication: Optional (uses user preferences if authenticated)
 
 ### Genre Endpoints
-- `GET /api/genres` - Get all available movie genres
+- `GET /api/v1/genres` - Get all available movie genres
 
 ### User Management Endpoints
-- `GET /api/users/profile` - Get user profile
-- `PUT /api/users/profile` - Update user profile
-- `PUT /api/users/password` - Change password
-- `GET /api/users/favorites` - Get user's favorite movies
-- `POST /api/users/favorites/:movieId` - Add movie to favorites
-- `DELETE /api/users/favorites/:movieId` - Remove movie from favorites
-- `GET /api/users/watchlist` - Get user's watchlist
-- `POST /api/users/watchlist/:movieId` - Add movie to watchlist
-- `DELETE /api/users/watchlist/:movieId` - Remove movie from watchlist
-- `GET /api/users/ratings` - Get user's movie ratings
-- `POST /api/users/ratings` - Rate a movie
-- `PUT /api/users/ratings/:ratingId` - Update movie rating
+- `GET /api/v1/users/profile` - Get user profile
+- `PUT /api/v1/users/profile` - Update user profile
+- `PUT /api/v1/users/password` - Change password
+- `GET /api/v1/users/favorites` - Get user's favorite movies
+- `POST /api/v1/users/favorites/:movieId` - Add movie to favorites
+- `DELETE /api/v1/users/favorites/:movieId` - Remove movie from favorites
+- `GET /api/v1/users/watchlist` - Get user's watchlist
+- `POST /api/v1/users/watchlist/:movieId` - Add movie to watchlist
+- `DELETE /api/v1/users/watchlist/:movieId` - Remove movie from watchlist
+- `GET /api/v1/users/ratings` - Get user's movie ratings
+- `POST /api/v1/users/ratings` - Rate a movie
+- `PUT /api/v1/users/ratings/:ratingId` - Update movie rating
 
 ## Response Format
 
