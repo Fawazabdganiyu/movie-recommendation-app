@@ -1,33 +1,35 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useAuthStore } from '@/store/authStore';
-import { movieApi } from '@/lib/api/movies';
-import { userApi } from '@/lib/api/user';
-import { Movie } from '@/types';
-import { Button } from '@/components/ui/button';
+import { useEffect, useState } from "react";
+import { useAuthStore } from "@/store/authStore";
+import { movieApi } from "@/lib/api/movies";
+import { userApi } from "@/lib/api/user";
+import { Movie, Genre } from "@/types";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Star, Search, Loader2, LogOut } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Star, Search, Loader2, LogOut, Filter, Tag } from "lucide-react";
+import { useRouter } from "next/navigation";
+import MovieFilter from "@/components/MovieFilter"; // Import the new component
 
 export default function DashboardPage() {
   const { user, logout, isAuthenticated } = useAuthStore();
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     if (!isAuthenticated) {
-      router.push('/auth/login');
+      router.push("/auth/login");
       return;
     }
 
@@ -37,7 +39,7 @@ export default function DashboardPage() {
         const response = await movieApi.getPopularMovies();
         setMovies(response.results);
       } catch (error) {
-        console.error('Failed to load movies:', error);
+        console.error("Failed to load movies:", error);
       } finally {
         setIsLoading(false);
       }
@@ -55,7 +57,7 @@ export default function DashboardPage() {
       const response = await movieApi.searchMovies(searchQuery);
       setMovies(response.results);
     } catch (error) {
-      console.error('Search failed:', error);
+      console.error("Search failed:", error);
     } finally {
       setSearchLoading(false);
     }
@@ -65,15 +67,19 @@ export default function DashboardPage() {
     try {
       await userApi.rateMovie({ movieId, rating });
       // You could add a toast notification here
-      console.log('Movie rated successfully');
+      console.log("Movie rated successfully");
     } catch (error) {
-      console.error('Failed to rate movie:', error);
+      console.error("Failed to rate movie:", error);
     }
   };
 
   const handleLogout = async () => {
     await logout();
-    router.push('/auth/login');
+    router.push("/auth/login");
+  };
+
+  const toggleFilter = () => {
+    setFilterOpen(!filterOpen);
   };
 
   if (!isAuthenticated) {
@@ -100,23 +106,34 @@ export default function DashboardPage() {
                 </p>
               )}
             </div>
-            <Button
-              variant="outline"
-              onClick={handleLogout}
-              className="flex items-center gap-2"
-            >
-              <LogOut className="h-4 w-4" />
-              Logout
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                onClick={() => router.push("/genres")}
+                className="flex items-center gap-2"
+              >
+                <Tag className="h-4 w-4" />
+                Genres
+              </Button>
+              <Button
+                variant="outline"
+                onClick={handleLogout}
+                className="flex items-center gap-2"
+              >
+                <LogOut className="h-4 w-4" />
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Search Section */}
-        <div className="mb-8">
-          <Card>
+        {/* Search and Filter Section */}
+        <div className="md:flex md:items-center md:justify-between mb-8">
+          {/* Search Section */}
+          <Card className="mb-4 md:mb-0 md:w-1/2">
             <CardHeader>
               <CardTitle>Search Movies</CardTitle>
               <CardDescription>
@@ -144,6 +161,12 @@ export default function DashboardPage() {
               </form>
             </CardContent>
           </Card>
+
+          {/* Filter Button */}
+          <Button onClick={toggleFilter} className="md:ml-4">
+            <Filter className="h-4 w-4 mr-2" />
+            Filter
+          </Button>
         </div>
 
         {/* Movies Grid */}
@@ -151,7 +174,7 @@ export default function DashboardPage() {
           <h2 className="text-2xl font-bold text-gray-900 mb-6">
             {searchQuery
               ? `Search Results for "${searchQuery}"`
-              : 'Popular Movies'}
+              : "Popular Movies"}
           </h2>
 
           {isLoading ? (
@@ -174,13 +197,28 @@ export default function DashboardPage() {
             <div className="text-center py-12">
               <p className="text-gray-500">
                 {searchQuery
-                  ? 'No movies found. Try a different search term.'
-                  : 'No movies available.'}
+                  ? "No movies found. Try a different search term."
+                  : "No movies available."}
               </p>
             </div>
           )}
         </div>
       </main>
+      {/* Movie Filter Modal (Conditionally Rendered) */}
+      {filterOpen && (
+        <MovieFilter
+          open={filterOpen}
+          onClose={toggleFilter}
+          onFilter={(filters) => {
+            // Apply filters and update the movie list
+            console.log("Applying filters:", filters);
+            // You need to call an API with the filter params and update the movies state
+            // Example:
+            // const filteredMovies = await movieApi.filterMovies(filters);
+            // setMovies(filteredMovies);
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -223,7 +261,7 @@ function MovieCard({ movie, onRate }: MovieCardProps) {
         <p className="text-xs text-gray-500 mb-3">
           {movie.release_date
             ? new Date(movie.release_date).getFullYear()
-            : 'Unknown'}
+            : "Unknown"}
         </p>
 
         {/* Rating Section */}
@@ -248,8 +286,8 @@ function MovieCard({ movie, onRate }: MovieCardProps) {
                 <Star
                   className={`h-4 w-4 transition-colors ${
                     rating <= (hoveredRating || userRating)
-                      ? 'text-blue-500 fill-current'
-                      : 'text-gray-300'
+                      ? "text-blue-500 fill-current"
+                      : "text-gray-300"
                   }`}
                 />
               </button>

@@ -5,9 +5,7 @@ export class PasswordUtils {
   static async hash(password: string): Promise<string> {
     // Hash password with cost of 12
     const salt = await bcrypt.genSalt(12);
-    const hash = await bcrypt.hash(password, salt);
-    console.log('Hashed password:', hash);
-    return hash;
+    return await bcrypt.hash(password, salt);
   }
 
   static async compare(password: string, hash: string): Promise<boolean> {

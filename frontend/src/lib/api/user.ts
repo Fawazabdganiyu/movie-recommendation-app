@@ -1,9 +1,25 @@
-import { apiClient } from './client';
-import { User } from '@/types';
+import { apiClient } from "./client";
+import { User } from "@/types";
 
-export interface RatingRequest {
-  movieId: number;
-  rating: number;
+// API-specific user preferences response (matches backend docs)
+export interface ApiUserPreferences {
+  _id: string;
+  userId: string;
+  favoriteGenres: number[];
+  favoriteActors?: number[];
+  favoriteDirectors?: number[];
+  minRating?: number;
+  languages?: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UpdateUserPreferencesRequest {
+  favoriteGenres?: number[];
+  favoriteActors?: number[];
+  favoriteDirectors?: number[];
+  minRating?: number;
+  languages?: string[];
 }
 
 export interface UserRating {
@@ -14,57 +30,58 @@ export interface UserRating {
   createdAt: string;
 }
 
-export interface UserPreference {
-  _id: string;
-  userId: string;
-  genreIds: number[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface RecommendationResponse {
-  recommendations: number[];
-  reason: string;
-}
-
 export const userApi = {
   // Get user profile
   getProfile: async (): Promise<User> => {
-    return apiClient.get<User>('/user/profile');
+    return apiClient.get<User>("/users/profile");
   },
 
   // Update user profile
-  updateProfile: async (data: Partial<User>): Promise<User> => {
-    return apiClient.put<User>('/user/profile', data);
+  updateProfile: async (data: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    avatar?: string | null;
+  }): Promise<User> => {
+    return apiClient.patch<User>("/users/profile", data);
   },
 
-  // Rate a movie
-  rateMovie: async (data: RatingRequest): Promise<UserRating> => {
-    return apiClient.post<UserRating>('/user/rate', data);
+  // Get user's favorite movies
+  getFavoriteMovies: async (): Promise<number[]> => {
+    return apiClient.get<number[]>("/users/favorites");
   },
 
-  // Get user ratings
-  getUserRatings: async (): Promise<UserRating[]> => {
-    return apiClient.get<UserRating[]>('/user/ratings');
+  // Add a movie to favorites
+  addFavoriteMovie: async (movieId: number): Promise<void> => {
+    return apiClient.post<void>(`/users/favorites/${movieId}`);
+  },
+
+  // Remove a movie from favorites
+  removeFavoriteMovie: async (movieId: number): Promise<void> => {
+    return apiClient.delete<void>(`/users/favorites/${movieId}`);
   },
 
   // Get user preferences
-  getPreferences: async (): Promise<UserPreference> => {
-    return apiClient.get<UserPreference>('/user/preferences');
+  getPreferences: async (): Promise<ApiUserPreferences> => {
+    return apiClient.get<ApiUserPreferences>("/users/preferences");
   },
 
-  // Update user preferences
-  updatePreferences: async (genreIds: number[]): Promise<UserPreference> => {
-    return apiClient.put<UserPreference>('/user/preferences', { genreIds });
+  // Update user preferences - now supports genres, minRating, and languages
+  updatePreferences: async (
+    data: UpdateUserPreferencesRequest,
+  ): Promise<ApiUserPreferences> => {
+    return apiClient.put<ApiUserPreferences>("/users/preferences", data);
   },
 
-  // Get recommendations
-  getRecommendations: async (): Promise<RecommendationResponse> => {
-    return apiClient.get<RecommendationResponse>('/user/recommendations');
+  // Convenience method to update just genre preferences
+  updateGenrePreferences: async (
+    genreIds: number[],
+  ): Promise<ApiUserPreferences> => {
+    return userApi.updatePreferences({ favoriteGenres: genreIds });
   },
 
-  // Delete account
+  // Delete user account
   deleteAccount: async (): Promise<void> => {
-    return apiClient.delete('/user/account');
+    return apiClient.delete<void>("/users/account");
   },
 };

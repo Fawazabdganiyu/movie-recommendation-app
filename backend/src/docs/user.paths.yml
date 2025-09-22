@@ -50,9 +50,6 @@ paths:
                 lastName:
                   type: string
                   example: Doe
-                username:
-                  type: string
-                  example: janedoe
                 email:
                   type: string
                   format: email
@@ -188,5 +185,110 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /users/preferences:
+    get:
+      summary: Get user preferences
+      operationId: getUserPreferences
+      tags:
+        - User Profile and Favorites
+      description: Retrieve the authenticated user's movie preferences.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User preferences retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User preferences fetched successfully
+                  data:
+                    $ref: '#/components/schemas/UserPreferences'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    put:
+      summary: Update user preferences
+      operationId: updateUserPreferences
+      tags:
+        - User Profile and Favorites
+      description: Update the authenticated user's movie preferences.
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: User preferences data to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                favoriteGenres:
+                  type: array
+                  items:
+                    type: integer
+                    format: int32
+                  example: [28, 12, 16] # Example TMDB genre IDs for Action, Adventure, Animation
+                  description: Array of TMDB genre IDs to set as user preferences
+                favoriteActors:
+                  type: array
+                  items:
+                    type: integer
+                    format: int32
+                  example: [500, 501, 502] # Example TMDB actor IDs
+                  description: Array of TMDB actor IDs to set as user preferences
+                  nullable: true
+                favoriteDirectors:
+                  type: array
+                  items:
+                    type: integer
+                    format: int32
+                  example: [600, 601, 602] # Example TMDB director IDs
+                  description: Array of TMDB director IDs to set as user preferences
+                  nullable: true
+                minRating:
+                  type: number
+                  format: float
+                  minimum: 0
+                  maximum: 10
+                  example: 7.5
+                  description: Minimum rating filter for movie recommendations
+                  nullable: true
+                languages:
+                  type: array
+                  items:
+                    type: string
+                  example: ['en', 'es'] # Example language codes for English and Spanish
+                  description: Array of ISO language codes the user prefers
+                  nullable: true
+      responses:
+        '200':
+          description: User preferences updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User preferences updated successfully
+                  data:
+                    $ref: '#/components/schemas/UserPreferences'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: '#/components/responses/ServerError'

@@ -118,7 +118,7 @@ export class TMDBService {
 
   /**
    * Discovers movies for recommendations based on user preferences.
-   * @param params Parameters for discovering movies including genres, keywords, etc.
+   * @param params Parameters for discovering movies including genres, actors, directors, languages, etc.
    * @returns A promise that resolves to discovered movies.
    */
   public async discoverMovies(params: {
@@ -127,6 +127,9 @@ export class TMDBService {
     sortBy?: string;
     page?: number;
     excludeGenres?: number[];
+    languages?: string[];
+    favoriteActors?: number[];
+    favoriteDirectors?: number[];
   }) {
     try {
       const {
@@ -135,6 +138,9 @@ export class TMDBService {
         sortBy = 'vote_average.desc',
         page = 1,
         excludeGenres,
+        languages = ['en'],
+        favoriteActors,
+        favoriteDirectors,
       } = params;
 
       const queryParams: any = {
@@ -147,6 +153,18 @@ export class TMDBService {
 
       if (genreIds && genreIds.length > 0) {
         queryParams.with_genres = genreIds.join(',');
+      }
+
+      if (favoriteActors && favoriteActors.length > 0) {
+        queryParams.with_people = favoriteActors.join(',');
+      }
+
+      if (favoriteDirectors && favoriteDirectors.length > 0) {
+        queryParams.with_crew = favoriteDirectors.join(',');
+      }
+
+      if (languages && languages.length > 0) {
+        queryParams.with_original_language = languages.join('|');
       }
 
       if (excludeGenres && excludeGenres.length > 0) {
@@ -172,7 +190,8 @@ export class TMDBService {
     try {
       const response = await this.api.get('/genre/movie/list');
 
-      return response.data;
+      // Extract genres array from TMDB response
+      return response.data.genres || [];
     } catch (error) {
       console.error('Error fetching genres from TMDB');
       throw error;

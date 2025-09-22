@@ -1,6 +1,7 @@
 import { Types } from 'mongoose';
 import { UserRepository } from '../repositories/user.repository';
 import { User } from '@shared/types';
+import { UserDocument } from '../types/user';
 import { NotFoundError } from '../errors/api.error';
 
 export class UserService {
@@ -32,11 +33,11 @@ export class UserService {
     return user;
   }
 
-  async getById(userId: Types.ObjectId): Promise<User> {
+  async getById(userId: Types.ObjectId): Promise<UserDocument> {
     const user = await this.userRepository.findById(userId);
     if (!user) throw new NotFoundError(`User with ID ${userId} not found`);
 
-    return user;
+    return user as UserDocument;
   }
 
   async getByEmail(email: string): Promise<User> {
@@ -63,7 +64,11 @@ export class UserService {
       firstName: user.firstName,
       fullName: user.fullName,
       avatar: user.avatar,
-      preferences: user.preferences,
+      favoriteGenres: user.favoriteGenres,
+      favoriteActors: user.favoriteActors,
+      favoriteDirectors: user.favoriteDirectors,
+      minRating: user.minRating,
+      languages: user.languages,
       createdAt: user.createdAt,
     };
   }
@@ -71,7 +76,7 @@ export class UserService {
   async update(
     userId: Types.ObjectId,
     updateData: Partial<User>
-  ): Promise<User> {
+  ): Promise<UserDocument> {
     // Remove sensitive fields from update data
     if (updateData.email) delete updateData.email;
     if (updateData.password) delete updateData.password;
@@ -81,7 +86,7 @@ export class UserService {
       throw new NotFoundError(`User with ID ${userId} not found`);
     }
 
-    return updatedUser;
+    return updatedUser as UserDocument;
   }
 
   /**

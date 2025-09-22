@@ -42,21 +42,32 @@ const userSchema = new Schema<UserDocument>(
       default: null,
     },
 
-    preferences: {
-      genres: {
-        type: [String],
-        default: [],
-      },
-      languages: {
-        type: [String],
-        default: ['en'],
-      },
-      minRating: {
-        type: Number,
-        default: 0,
-        min: [0, 'Minimum rating cannot be less than 0'],
-        max: [10, 'Minimum rating cannot exceed 10'],
-      },
+    // User preferences - stored as separate fields to match API structure
+    favoriteGenres: {
+      type: [Number], // TMDB genre IDs
+      default: [],
+    },
+
+    favoriteActors: {
+      type: [Number], // TMDB actor IDs
+      default: [],
+    },
+
+    favoriteDirectors: {
+      type: [Number], // TMDB director IDs
+      default: [],
+    },
+
+    minRating: {
+      type: Number,
+      default: 0,
+      min: [0, 'Minimum rating cannot be less than 0'],
+      max: [10, 'Minimum rating cannot exceed 10'],
+    },
+
+    languages: {
+      type: [String], // ISO language codes
+      default: ['en'],
     },
 
     favorites: [
@@ -125,9 +136,11 @@ const userSchema = new Schema<UserDocument>(
 );
 
 // Indexes for better performance
-// userSchema.index({ 'ratings.movieId': 1 });
-// userSchema.index({ favorites: 1 });
-// userSchema.index({ watchlist: 1 });
+userSchema.index({ favorites: 1 });
+userSchema.index({ watchlist: 1 });
+userSchema.index({ favoriteGenres: 1 });
+userSchema.index({ favoriteActors: 1 });
+userSchema.index({ favoriteDirectors: 1 });
 
 // Virtual for full name
 userSchema.virtual('fullName').get(function (this: User) {
@@ -174,8 +187,27 @@ userSchema.methods.getPublicProfile = function (): Partial<User> {
     firstName: this.firstName,
     lastName: this.lastName,
     avatar: this.avatar,
-    preferences: this.preferences,
+    favoriteGenres: this.favoriteGenres,
+    favoriteActors: this.favoriteActors,
+    favoriteDirectors: this.favoriteDirectors,
+    minRating: this.minRating,
+    languages: this.languages,
     createdAt: this.createdAt,
+  };
+};
+
+// Instance method to get preferences in API format
+userSchema.methods.getPreferences = function () {
+  return {
+    _id: this._id,
+    userId: this._id,
+    favoriteGenres: this.favoriteGenres || [],
+    favoriteActors: this.favoriteActors || [],
+    favoriteDirectors: this.favoriteDirectors || [],
+    minRating: this.minRating || 0,
+    languages: this.languages || ['en'],
+    createdAt: this.createdAt,
+    updatedAt: this.updatedAt,
   };
 };
 

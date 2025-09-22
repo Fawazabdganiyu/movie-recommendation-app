@@ -106,6 +106,9 @@ export class MovieController {
 
       let userGenreIds = genreIds;
       let userMinRating = minRating || 6.0;
+      let userLanguages: string[] = ['en']; // Default to English
+      let userFavoriteActors: number[] = [];
+      let userFavoriteDirectors: number[] = [];
 
       // If user is authenticated, get their preferences
       if (userId) {
@@ -113,14 +116,25 @@ export class MovieController {
           const user = await getUserService().getById(
             new Types.ObjectId(userId)
           );
-          if (user?.preferences) {
+          if (user) {
             // Use user's preferred genre IDs if not provided in query
-            if (!genreIds && user.preferences.genreIds?.length > 0) {
-              userGenreIds = user.preferences.genreIds;
+            if (!genreIds && user.favoriteGenres?.length > 0) {
+              userGenreIds = user.favoriteGenres;
             }
             // Use user's minimum rating preference if not provided
-            if (!minRating && user.preferences.minRating) {
-              userMinRating = user.preferences.minRating;
+            if (!minRating && user.minRating) {
+              userMinRating = user.minRating;
+            }
+            // Get user's language preferences
+            if (user.languages && user.languages.length > 0) {
+              userLanguages = user.languages;
+            }
+            // Get user's favorite actors and directors for enhanced recommendations
+            if (user.favoriteActors && user.favoriteActors.length > 0) {
+              userFavoriteActors = user.favoriteActors;
+            }
+            if (user.favoriteDirectors && user.favoriteDirectors.length > 0) {
+              userFavoriteDirectors = user.favoriteDirectors;
             }
           }
         } catch (error) {
@@ -133,6 +147,9 @@ export class MovieController {
         genreIds: userGenreIds,
         minRating: userMinRating,
         page,
+        languages: userLanguages,
+        favoriteActors: userFavoriteActors,
+        favoriteDirectors: userFavoriteDirectors,
       });
 
       // Add recommendation metadata
@@ -143,6 +160,11 @@ export class MovieController {
           basedOnPreferences: !!userId,
           genreIds: userGenreIds,
           minRating: userMinRating,
+          languages: userLanguages,
+          favoriteActors: userFavoriteActors,
+          favoriteDirectors: userFavoriteDirectors,
+          enhancedRecommendations:
+            userFavoriteActors.length > 0 || userFavoriteDirectors.length > 0,
         },
       };
 

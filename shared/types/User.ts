@@ -4,11 +4,11 @@ import { Types } from "mongoose";
  * User Preference Settings
  */
 export interface UserPreferences {
-  genres: string[]; // Preferred genre names
-  genreIds: number[]; // TMDB genre IDs
-  languages: string[]; // ISO language codes
-  minRating: number; // Minimum rating filter (1-10)
-  explicitContent: boolean; // Allow adult content
+  favoriteGenres: number[]; // TMDB genre IDs
+  favoriteActors?: number[]; // TMDB actor IDs
+  favoriteDirectors?: number[]; // TMDB director IDs
+  minRating?: number; // Minimum rating filter (0-10)
+  languages?: string[]; // ISO language codes
 }
 
 /**
@@ -23,7 +23,11 @@ export interface User {
   lastName: string;
   fullName: string; // Virtual property
   avatar?: string;
-  preferences: UserPreferences;
+  favoriteGenres: number[]; // TMDB genre IDs
+  favoriteActors?: number[]; // TMDB actor IDs
+  favoriteDirectors?: number[]; // TMDB director IDs
+  minRating?: number; // Minimum rating filter (0-10)
+  languages?: string[]; // ISO language codes
   favorites: number[]; // Movie IDs
   watchlist: number[]; // Movie IDs
   isEmailVerified: boolean;
@@ -42,13 +46,16 @@ export interface User {
  */
 export interface PublicUser {
   _id: string;
-  username: string;
   email: string;
   firstName: string;
   lastName: string;
   fullName: string;
   avatar?: string;
-  preferences: UserPreferences;
+  favoriteGenres: number[]; // TMDB genre IDs
+  favoriteActors?: number[]; // TMDB actor IDs
+  favoriteDirectors?: number[]; // TMDB director IDs
+  minRating?: number; // Minimum rating filter (0-10)
+  languages?: string[]; // ISO language codes
   favorites: number[];
   watchlist: number[];
   isEmailVerified: boolean;
@@ -63,9 +70,12 @@ export interface PublicUser {
 export interface UserUpdateData {
   firstName?: string;
   lastName?: string;
-  username?: string;
   avatar?: string;
-  preferences?: Partial<UserPreferences>;
+  favoriteGenres?: number[];
+  favoriteActors?: number[];
+  favoriteDirectors?: number[];
+  minRating?: number;
+  languages?: string[];
 }
 
 /**

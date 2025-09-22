@@ -11,9 +11,6 @@ components:
         _id:
           type: string
           example: 64f1c2a9b3a1f2c4d5e6f789
-        username:
-          type: string
-          example: johndoe
         email:
           type: string
           format: email
@@ -208,9 +205,6 @@ components:
         lastName:
           type: string
           example: Doe
-        username:
-          type: string
-          example: janedoe
         email:
           type: string
           format: email
@@ -230,6 +224,61 @@ components:
           example: User profile fetched successfully
         data:
           $ref: '#/components/schemas/User'
+    UserPreferences:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 64f1c2a9b3a1f2c4d5e6f790
+        userId:
+          type: string
+          example: 64f1c2a9b3a1f2c4d5e6f789
+        favoriteGenres:
+          type: array
+          items:
+            type: integer
+            format: int32
+          example: [28, 12, 16]
+          description: Array of TMDB genre IDs that the user prefers
+        favoriteActors:
+          type: array
+          items:
+            type: integer
+            format: int32
+          example: [500, 501, 502]
+          description: Array of TMDB actor IDs that the user prefers
+          nullable: true
+        favoriteDirectors:
+          type: array
+          items:
+            type: integer
+            format: int32
+          example: [600, 601, 602]
+          description: Array of TMDB director IDs that the user prefers
+          nullable: true
+        minRating:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 10
+          example: 7.5
+          description: Minimum rating filter for movie recommendations
+          nullable: true
+        languages:
+          type: array
+          items:
+            type: string
+          example: ['en', 'es', 'fr']
+          description: Array of ISO language codes the user prefers
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          example: '2023-11-08T12:00:00.000Z'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2023-11-08T12:00:00.000Z'
     GenericSuccessResponse:
       type: object
       properties:

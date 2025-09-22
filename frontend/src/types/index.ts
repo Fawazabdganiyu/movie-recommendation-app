@@ -1,3 +1,5 @@
+import { ApiResponse, Movie } from "@shared/types";
+
 // Re-export shared types for frontend use
 export type {
   // Core types from shared
@@ -26,6 +28,16 @@ export interface RatingRequest {
   review?: string;
 }
 
+export interface RatingReview {
+  _id: string;
+  userId: string;
+  movieId: number;
+  rating: number;
+  review?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface MovieSearchParams {
   query?: string;
   genre?: number;
@@ -38,4 +50,15 @@ export interface UIState {
   isLoading: boolean;
   error: string | null;
   success: string | null;
+}
+
+export interface MovieDetailResponse extends ApiResponse<Movie> {
+  data: Movie & {
+    genres: {
+      id: number;
+      name: string;
+    }[];
+    runtime: number;
+    tagline: string;
+  };
 }

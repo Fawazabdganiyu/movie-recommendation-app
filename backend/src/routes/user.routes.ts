@@ -10,6 +10,9 @@ const userController = UserController.getInstance(getUserService());
 router.get('/profile', requireAuth, userController.getProfile);
 router.patch('/profile', requireAuth, userController.updateProfile);
 
+router.get('/preferences', requireAuth, userController.getPreferences);
+router.put('/preferences', requireAuth, userController.updatePreferences);
+
 router.post(
   '/favorites/:movieId',
   requireAuth,

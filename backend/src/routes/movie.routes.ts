@@ -36,7 +36,7 @@ router.get(
   '/:movieId/ratings-reviews',
   requireAuth,
   validateParams(movieIdParamSchema),
-  movieController.submitRatingReview
+  movieController.getMovieRatingsReviews
 );
 
 // GET /api/v1/movies/search - Search for movies by query
