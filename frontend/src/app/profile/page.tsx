@@ -36,7 +36,7 @@ interface UserProfile {
 }
 
 export default function ProfilePage() {
-  const { user, isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const router = useRouter();
 
   // Profile state

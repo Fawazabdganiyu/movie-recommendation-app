@@ -29,7 +29,6 @@ import {
   Edit,
   Trash2,
   Eye,
-  Star,
   Loader2,
   BookmarkPlus,
   Film,
@@ -227,7 +226,7 @@ export default function WatchlistsPage() {
             </div>
 
             <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-              <DialogTrigger asChild>
+              <DialogTrigger>
                 <Button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white">
                   <Plus className="h-5 w-5" />
                   Create Watchlist

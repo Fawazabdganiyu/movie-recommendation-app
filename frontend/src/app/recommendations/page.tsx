@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import { movieApi } from "@/lib/api/movies";
-import { userApi } from "@/lib/api/user";
 import { Movie } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

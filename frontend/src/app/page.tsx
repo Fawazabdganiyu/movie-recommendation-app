@@ -38,13 +38,13 @@ export default function LandingPage() {
           <div className="flex items-center gap-2">
             {isAuthenticated ? (
               <>
-                <Button variant="outline" asChild>
+                <Button variant="outline">
                   <Link href="/dashboard">
                     <LayoutDashboard className="mr-2 h-4 w-4" />
                     Dashboard
                   </Link>
                 </Button>
-                <Button variant="outline" asChild>
+                <Button variant="outline">
                   <Link href="/watchlists">
                     <Bookmark className="mr-2 h-4 w-4" />
                     Watchlists
@@ -57,10 +57,10 @@ export default function LandingPage() {
               </>
             ) : (
               <>
-                <Button variant="ghost" asChild>
+                <Button variant="ghost">
                   <Link href="/auth/login">Log In</Link>
                 </Button>
-                <Button asChild>
+                <Button>
                   <Link href="/auth/register">
                     Get Started <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
@@ -83,7 +83,7 @@ export default function LandingPage() {
           </p>
           <div className="flex justify-center gap-4">
             {isAuthenticated ? (
-              <Button size="lg" asChild>
+              <Button size="lg">
                 <Link href="/dashboard">
                   Go to Your Dashboard
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -91,7 +91,7 @@ export default function LandingPage() {
               </Button>
             ) : (
               <>
-                <Button size="lg" asChild>
+                <Button size="lg">
                   <Link href="/auth/register">
                     Get Started for Free
                     <ArrowRight className="ml-2 h-5 w-5" />
@@ -100,7 +100,6 @@ export default function LandingPage() {
                 <Button
                   size="lg"
                   variant="outline"
-                  asChild
                   className="border-gray-200 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
                 >
                   <Link href="/dashboard">Explore Popular Movies</Link>
@@ -118,7 +117,7 @@ export default function LandingPage() {
                 How It Works
               </h2>
               <p className="text-lg text-gray-500 mt-4">
-                A simple, fun way to find movies you'll love.
+                A simple, fun way to find movies you&apos;ll love.
               </p>
             </div>
             <div className="grid md:grid-cols-3 gap-8 text-center">
@@ -130,8 +129,8 @@ export default function LandingPage() {
                   Rate Movies
                 </h3>
                 <p className="text-gray-500">
-                  Tell us what you think about movies you've seen. The more you
-                  rate, the better your recommendations become.
+                  Tell us what you think about movies you&apos;ve seen. The more
+                  you rate, the better your recommendations become.
                 </p>
               </div>
               <div className="flex flex-col items-center">

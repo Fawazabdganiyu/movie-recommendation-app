@@ -97,7 +97,7 @@ export default function AddToWatchlistButton({
 
   return (
     <Dialog open={showDialog} onOpenChange={setShowDialog}>
-      <DialogTrigger asChild>
+      <DialogTrigger>
         <Button size={size} variant={variant} className={className}>
           {children || (
             <>
