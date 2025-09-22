@@ -51,6 +51,7 @@ export default function RegisterPage() {
         data.password,
       );
       router.push("/dashboard");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       // Error is handled by the store
     }

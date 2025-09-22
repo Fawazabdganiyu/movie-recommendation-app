@@ -19,11 +19,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-
-const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
+import { loginSchema } from "@shared/validation";
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
@@ -45,6 +41,7 @@ export default function LoginPage() {
       clearError();
       await login(data.email, data.password);
       router.push("/dashboard");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       // Error is handled by the store
     }
