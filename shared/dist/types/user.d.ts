@@ -3,11 +3,11 @@ import { Types } from "mongoose";
  * User Preference Settings
  */
 export interface UserPreferences {
-    genres: string[];
-    genreIds: number[];
-    languages: string[];
-    minRating: number;
-    explicitContent: boolean;
+    favoriteGenres: number[];
+    favoriteActors?: number[];
+    favoriteDirectors?: number[];
+    minRating?: number;
+    languages?: string[];
 }
 /**
  * Complete User Interface (Backend)
@@ -21,7 +21,11 @@ export interface User {
     lastName: string;
     fullName: string;
     avatar?: string;
-    preferences: UserPreferences;
+    favoriteGenres: number[];
+    favoriteActors?: number[];
+    favoriteDirectors?: number[];
+    minRating?: number;
+    languages?: string[];
     favorites: number[];
     watchlist: number[];
     isEmailVerified: boolean;
@@ -39,13 +43,16 @@ export interface User {
  */
 export interface PublicUser {
     _id: string;
-    username: string;
     email: string;
     firstName: string;
     lastName: string;
     fullName: string;
     avatar?: string;
-    preferences: UserPreferences;
+    favoriteGenres: number[];
+    favoriteActors?: number[];
+    favoriteDirectors?: number[];
+    minRating?: number;
+    languages?: string[];
     favorites: number[];
     watchlist: number[];
     isEmailVerified: boolean;
@@ -59,9 +66,12 @@ export interface PublicUser {
 export interface UserUpdateData {
     firstName?: string;
     lastName?: string;
-    username?: string;
     avatar?: string;
-    preferences?: Partial<UserPreferences>;
+    favoriteGenres?: number[];
+    favoriteActors?: number[];
+    favoriteDirectors?: number[];
+    minRating?: number;
+    languages?: string[];
 }
 /**
  * Password Change Request

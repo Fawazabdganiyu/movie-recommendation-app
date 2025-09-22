@@ -15,9 +15,7 @@ const RatingReviewSchema: Schema = new Schema(
   { timestamps: true, versionKey: false }
 );
 
-const RatingReviewModel = model<RatingReviewDocument>(
+export const RatingReviewModel = model<RatingReviewDocument>(
   'Rating',
   RatingReviewSchema
 );
-
-export default RatingReviewModel;

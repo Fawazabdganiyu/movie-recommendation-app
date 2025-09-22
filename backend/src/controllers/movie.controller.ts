@@ -14,10 +14,12 @@ import { RatingReviewService } from '../services/rating-review.service';
 
 export class MovieController {
   private static instance: MovieController;
+  private movieService: TMDBService;
+  private ratingReviewService: RatingReviewService;
 
   private constructor(
-    private movieService: TMDBService,
-    private ratingReviewService: RatingReviewService
+    movieService: TMDBService,
+    ratingReviewService: RatingReviewService
   ) {
     this.movieService = movieService;
     this.ratingReviewService = ratingReviewService;
@@ -186,7 +188,30 @@ export class MovieController {
     }
   };
 
-  async submitRatingReview(req: Request, res: Response, next: NextFunction) {
+  getPopularMovies = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { page } = req.query as { page?: string };
+      const pageNumber = page ? parseInt(page, 10) : 1;
+
+      const popularMovies =
+        await this.movieService.getPopularMovies(pageNumber);
+
+      return success(res, 'Popular movies fetched successfully', popularMovies);
+    } catch (error) {
+      console.error('Error in getPopularMovies controller:', error);
+      next(error);
+    }
+  };
+
+  submitRatingReview = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const { movieId } = req.params;
       const { rating, review } = req.body;
@@ -212,9 +237,13 @@ export class MovieController {
     } catch (error: any) {
       next(error);
     }
-  }
+  };
 
-  async updateRatingReview(req: Request, res: Response, next: NextFunction) {
+  updateRatingReview = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const { movieId } = req.params;
       const { rating, review } = req.body;
@@ -241,13 +270,13 @@ export class MovieController {
     } catch (error: any) {
       next(error);
     }
-  }
+  };
 
-  async getMovieRatingsReviews(
+  getMovieRatingsReviews = async (
     req: Request,
     res: Response,
     next: NextFunction
-  ) {
+  ) => {
     try {
       const { movieId } = req.params as unknown as { movieId: number };
       const reviews =
@@ -257,5 +286,5 @@ export class MovieController {
     } catch (error: any) {
       next(error);
     }
-  }
+  };
 }

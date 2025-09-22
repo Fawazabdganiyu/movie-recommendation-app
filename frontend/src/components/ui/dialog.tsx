@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { X } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import * as React from "react";
+import { X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface DialogProps {
   open?: boolean;
@@ -24,19 +24,19 @@ const Dialog: React.FC<DialogProps> = ({ open, onOpenChange, children }) => {
 
   React.useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         handleClose();
       }
     };
 
     if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden';
+      document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
     }
 
     return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'auto';
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "auto";
     };
   }, [isOpen]);
 
@@ -64,16 +64,16 @@ const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
     <div
       ref={ref}
       className={cn(
-        'relative bg-white rounded-lg shadow-lg p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto',
-        className
+        "relative bg-white rounded-lg shadow-lg p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto",
+        className,
       )}
       {...props}
     >
       {children}
     </div>
-  )
+  ),
 );
-DialogContent.displayName = 'DialogContent';
+DialogContent.displayName = "DialogContent";
 
 interface DialogHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
@@ -83,14 +83,17 @@ const DialogHeader = React.forwardRef<HTMLDivElement, DialogHeaderProps>(
   ({ className, children, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('flex flex-col space-y-1.5 text-center sm:text-left', className)}
+      className={cn(
+        "flex flex-col space-y-1.5 text-center sm:text-left",
+        className,
+      )}
       {...props}
     >
       {children}
     </div>
-  )
+  ),
 );
-DialogHeader.displayName = 'DialogHeader';
+DialogHeader.displayName = "DialogHeader";
 
 interface DialogTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
   children: React.ReactNode;
@@ -101,33 +104,31 @@ const DialogTitle = React.forwardRef<HTMLHeadingElement, DialogTitleProps>(
     <h2
       ref={ref}
       className={cn(
-        'text-lg font-semibold leading-none tracking-tight',
-        className
+        "text-lg font-semibold leading-none tracking-tight",
+        className,
       )}
       {...props}
     >
       {children}
     </h2>
-  )
+  ),
 );
-DialogTitle.displayName = 'DialogTitle';
+DialogTitle.displayName = "DialogTitle";
 
-interface DialogDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {
+interface DialogDescriptionProps
+  extends React.HTMLAttributes<HTMLParagraphElement> {
   children: React.ReactNode;
 }
 
-const DialogDescription = React.forwardRef<HTMLParagraphElement, DialogDescriptionProps>(
-  ({ className, children, ...props }, ref) => (
-    <p
-      ref={ref}
-      className={cn('text-sm text-gray-500', className)}
-      {...props}
-    >
-      {children}
-    </p>
-  )
-);
-DialogDescription.displayName = 'DialogDescription';
+const DialogDescription = React.forwardRef<
+  HTMLParagraphElement,
+  DialogDescriptionProps
+>(({ className, children, ...props }, ref) => (
+  <p ref={ref} className={cn("text-sm text-gray-500", className)} {...props}>
+    {children}
+  </p>
+));
+DialogDescription.displayName = "DialogDescription";
 
 interface DialogFooterProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
@@ -138,18 +139,19 @@ const DialogFooter = React.forwardRef<HTMLDivElement, DialogFooterProps>(
     <div
       ref={ref}
       className={cn(
-        'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 pt-4',
-        className
+        "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 pt-4",
+        className,
       )}
       {...props}
     >
       {children}
     </div>
-  )
+  ),
 );
-DialogFooter.displayName = 'DialogFooter';
+DialogFooter.displayName = "DialogFooter";
 
-interface DialogCloseProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface DialogCloseProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children?: React.ReactNode;
 }
 
@@ -158,17 +160,38 @@ const DialogClose = React.forwardRef<HTMLButtonElement, DialogCloseProps>(
     <button
       ref={ref}
       className={cn(
-        'absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none',
-        className
+        "absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none",
+        className,
       )}
       {...props}
     >
       {children || <X className="h-4 w-4" />}
       <span className="sr-only">Close</span>
     </button>
-  )
+  ),
 );
-DialogClose.displayName = 'DialogClose';
+DialogClose.displayName = "DialogClose";
+
+interface DialogTriggerProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+}
+
+const DialogTrigger = React.forwardRef<HTMLButtonElement, DialogTriggerProps>(
+  ({ className, children, ...props }, ref) => (
+    <button
+      ref={ref}
+      className={cn(
+        "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground",
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </button>
+  ),
+);
+DialogTrigger.displayName = "DialogTrigger";
 
 export {
   Dialog,
@@ -178,4 +201,5 @@ export {
   DialogHeader,
   DialogTitle,
   DialogClose,
+  DialogTrigger,
 };

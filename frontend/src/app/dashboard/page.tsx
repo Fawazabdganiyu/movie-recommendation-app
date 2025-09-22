@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/authStore";
 import { movieApi } from "@/lib/api/movies";
-import { userApi } from "@/lib/api/user";
-import { Movie, Genre } from "@/types";
+import AddToWatchlistButton from "@/components/AddToWatchlistButton";
+
+import { Movie } from "@/types";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,9 +15,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Star, Search, Loader2, LogOut, Filter, Tag } from "lucide-react";
+import {
+  Star,
+  Search,
+  Loader2,
+  LogOut,
+  Filter,
+  Tag,
+  Eye,
+  User,
+  Sparkles,
+  ArrowRight,
+  Bookmark,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
-import MovieFilter from "@/components/MovieFilter"; // Import the new component
+import MovieFilter from "@/components/MovieFilter";
+import Image from "next/image";
 
 export default function DashboardPage() {
   const { user, logout, isAuthenticated } = useAuthStore();
@@ -36,10 +50,10 @@ export default function DashboardPage() {
     const loadPopularMovies = async () => {
       try {
         setIsLoading(true);
-        const response = await movieApi.getPopularMovies();
+        const response = await movieApi.getPopularMovies(1);
         setMovies(response.results);
       } catch (error) {
-        console.error("Failed to load movies:", error);
+        console.error("Failed to load popular movies:", error);
       } finally {
         setIsLoading(false);
       }
@@ -65,9 +79,7 @@ export default function DashboardPage() {
 
   const handleRateMovie = async (movieId: number, rating: number) => {
     try {
-      await userApi.rateMovie({ movieId, rating });
-      // You could add a toast notification here
-      console.log("Movie rated successfully");
+      await movieApi.rateMovie(movieId, { rating });
     } catch (error) {
       console.error("Failed to rate movie:", error);
     }
@@ -76,6 +88,18 @@ export default function DashboardPage() {
   const handleLogout = async () => {
     await logout();
     router.push("/auth/login");
+  };
+
+  const resetToPopularMovies = async () => {
+    try {
+      setIsLoading(true);
+      const response = await movieApi.getPopularMovies(1);
+      setMovies(response.results);
+    } catch (error) {
+      console.error("Failed to reset to popular movies:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const toggleFilter = () => {
@@ -102,25 +126,56 @@ export default function DashboardPage() {
               </h1>
               {user && (
                 <p className="text-sm text-gray-500">
-                  Welcome back, {user.fullName}
+                  Welcome back, {user.firstName}
                 </p>
               )}
             </div>
             <div className="flex items-center gap-3">
               <Button
+                onClick={() => router.push("/recommendations")}
+                className="flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700"
+              >
+                <Sparkles className="h-5 w-5" />
+                My Recommendations
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => router.push("/profile")}
+                className="flex items-center gap-2 border-gray-300 text-gray-700 font-medium hover:bg-gray-50"
+              >
+                <User className="h-5 w-5 text-gray-600" />
+                Profile
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => router.push("/watchlists")}
+                className="flex items-center gap-2 border-gray-300 text-gray-700 font-medium hover:bg-gray-50"
+              >
+                <Bookmark className="h-5 w-5 text-gray-600" />
+                Watchlists
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => router.push("/preferences")}
+                className="flex items-center gap-2 border-gray-300 text-gray-700 font-medium hover:bg-gray-50"
+              >
+                <Tag className="h-5 w-5 text-gray-600" />
+                Preferences
+              </Button>
+              <Button
                 variant="outline"
                 onClick={() => router.push("/genres")}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 border-gray-300 text-gray-700 font-medium hover:bg-gray-50"
               >
-                <Tag className="h-4 w-4" />
+                <Tag className="h-5 w-5 text-gray-600" />
                 Genres
               </Button>
               <Button
                 variant="outline"
                 onClick={handleLogout}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 border-gray-300 text-gray-700 font-medium hover:bg-gray-50"
               >
-                <LogOut className="h-4 w-4" />
+                <LogOut className="h-5 w-5 text-gray-600" />
                 Logout
               </Button>
             </div>
@@ -152,9 +207,9 @@ export default function DashboardPage() {
                 </div>
                 <Button type="submit" disabled={searchLoading}>
                   {searchLoading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className="h-5 w-5 animate-spin text-gray-500" />
                   ) : (
-                    <Search className="h-4 w-4" />
+                    <Search className="h-5 w-5 text-gray-500" />
                   )}
                   Search
                 </Button>
@@ -168,6 +223,30 @@ export default function DashboardPage() {
             Filter
           </Button>
         </div>
+
+        {/* Recommendations CTA */}
+        <Card className="mb-8 bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Sparkles className="h-6 w-6" />
+              Ready for Your Personal Picks?
+            </CardTitle>
+            <CardDescription className="text-blue-100">
+              Based on your ratings and preferences, we&apos;ve curated a
+              special list of movies just for you.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button
+              size="lg"
+              onClick={() => router.push("/recommendations")}
+              className="bg-white text-blue-600 font-bold hover:bg-gray-100"
+            >
+              View My Recommendations
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </CardContent>
+        </Card>
 
         {/* Movies Grid */}
         <div className="mb-8">
@@ -205,18 +284,25 @@ export default function DashboardPage() {
         </div>
       </main>
       {/* Movie Filter Modal (Conditionally Rendered) */}
+      {/* Movie Filter Dialog */}
       {filterOpen && (
         <MovieFilter
           open={filterOpen}
-          onClose={toggleFilter}
-          onFilter={(filters) => {
+          onClose={() => setFilterOpen(false)}
+          onFilter={async (filters) => {
             // Apply filters and update the movie list
             console.log("Applying filters:", filters);
-            // You need to call an API with the filter params and update the movies state
-            // Example:
-            // const filteredMovies = await movieApi.filterMovies(filters);
-            // setMovies(filteredMovies);
+            try {
+              setIsLoading(true);
+              const filteredMovies = await movieApi.filterMovies(filters);
+              setMovies(filteredMovies.results);
+            } catch (error) {
+              console.error("Failed to filter movies:", error);
+            } finally {
+              setIsLoading(false);
+            }
           }}
+          onReset={resetToPopularMovies}
         />
       )}
     </div>
@@ -232,15 +318,23 @@ interface MovieCardProps {
 function MovieCard({ movie, onRate }: MovieCardProps) {
   const [userRating, setUserRating] = useState<number>(0);
   const [hoveredRating, setHoveredRating] = useState<number>(0);
+  const router = useRouter();
 
   const handleRatingClick = (rating: number) => {
     setUserRating(rating);
     onRate(movie.id, rating);
   };
 
+  const handleViewDetails = () => {
+    router.push(`/movies/${movie.id}`);
+  };
+
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-      <div className="aspect-[2/3] relative bg-gray-200">
+      <div
+        className="aspect-[2/3] relative bg-gray-200 cursor-pointer"
+        onClick={handleViewDetails}
+      >
         {movie.poster_path ? (
           <img
             src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
@@ -252,10 +346,24 @@ function MovieCard({ movie, onRate }: MovieCardProps) {
             No Image
           </div>
         )}
+        <div className="absolute inset-0  bg-opacity-0 hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center">
+          <div className="opacity-0 hover:opacity-100 transition-opacity duration-200">
+            <Button
+              size="sm"
+              className="bg-white text-gray-900 hover:bg-gray-100 font-medium"
+            >
+              <Eye className="h-4 w-4 mr-2" />
+              View Details
+            </Button>
+          </div>
+        </div>
       </div>
 
       <CardContent className="p-4">
-        <h3 className="font-semibold text-sm mb-2 line-clamp-2">
+        <h3
+          className="font-semibold text-sm mb-2 line-clamp-2 cursor-pointer hover:text-blue-600"
+          onClick={handleViewDetails}
+        >
           {movie.title}
         </h3>
         <p className="text-xs text-gray-500 mb-3">
@@ -265,9 +373,9 @@ function MovieCard({ movie, onRate }: MovieCardProps) {
         </p>
 
         {/* Rating Section */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-1">
-            <Star className="h-4 w-4 text-yellow-400 fill-current" />
+            <Star className="h-5 w-5 text-yellow-400 fill-current" />
             <span className="text-sm font-medium">
               {movie.vote_average.toFixed(1)}
             </span>
@@ -284,16 +392,25 @@ function MovieCard({ movie, onRate }: MovieCardProps) {
                 onClick={() => handleRatingClick(rating)}
               >
                 <Star
-                  className={`h-4 w-4 transition-colors ${
+                  className={`h-5 w-5 transition-colors cursor-pointer ${
                     rating <= (hoveredRating || userRating)
                       ? "text-blue-500 fill-current"
-                      : "text-gray-300"
+                      : "text-gray-300 hover:text-gray-400"
                   }`}
                 />
               </button>
             ))}
           </div>
         </div>
+
+        {/* Add to Watchlist Button */}
+        <AddToWatchlistButton
+          movieId={movie.id}
+          movieTitle={movie.title}
+          size="sm"
+          variant="outline"
+          className="w-full border-gray-300 text-gray-700 hover:bg-gray-50"
+        />
       </CardContent>
     </Card>
   );

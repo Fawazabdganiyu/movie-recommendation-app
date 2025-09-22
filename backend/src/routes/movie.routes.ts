@@ -53,6 +53,9 @@ router.get(
   movieController.filterMovies
 );
 
+// GET /api/v1/movies/popular - Get popular movies
+router.get('/popular', optionalAuth, movieController.getPopularMovies);
+
 // GET /api/v1/movies/recommendations - Get personalized recommendations
 router.get(
   '/recommendations',

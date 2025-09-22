@@ -142,9 +142,11 @@ The backend implements a comprehensive error handling system:
 
     ```bash
     # Copy environment template
-    cp .env.example .env
+    cp .env.example backend/.env
 
-    # Add your API keys and database URL to .env
+    # Add your TMDB API key and database URL to .env
+    cp frontend/.env.example frontend/.env.local
+    # Update NEXT_PUBLIC_API_URL to local backend URL
     ```
 
 4.  **Start Development Servers**
@@ -154,8 +156,8 @@ The backend implements a comprehensive error handling system:
     npm run dev
 
     # Or start individually:
-    # npm run dev:frontend  # Next.js app on http://localhost:3000
-    # npm run dev:backend   # Express API server on http://localhost:5000
+    npm run dev:frontend  # Next.js app on http://localhost:3000
+    npm run dev:backend   # Express API server on http://localhost:5000
     ```
 
 ### Deployment

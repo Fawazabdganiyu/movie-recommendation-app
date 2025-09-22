@@ -17,39 +17,39 @@ const router = Router();
 const controller = WatchlistController.getInstance(getWatchlistService());
 
 router.post(
-  '/watchlists',
+  '/',
   requireAuth,
   validateBody(createWatchlistSchema),
   controller.createWatchlist
 );
-router.get('/watchlists', requireAuth, controller.getUserWatchlists);
+router.get('/', requireAuth, controller.getUserWatchlists);
 router.get(
-  '/watchlists/:watchlistId',
+  '/:watchlistId',
   requireAuth,
   validateParams(watchlistIdParamSchema),
   controller.getWatchlistById
 );
 router.put(
-  '/watchlists/:watchlistId',
+  '/:watchlistId',
   requireAuth,
   validateParams(watchlistIdParamSchema),
   validateBody(updateWatchlistSchema),
   controller.updateWatchlist
 );
 router.delete(
-  '/watchlists/:watchlistId',
+  '/:watchlistId',
   requireAuth,
   validateParams(watchlistIdParamSchema),
   controller.deleteWatchlist
 );
 router.post(
-  '/watchlists/:watchlistId/movies/:movieId',
+  '/:watchlistId/movies/:movieId',
   requireAuth,
   validateParams(watchlistIdParamSchema.extend(movieIdParamSchema.shape)),
   controller.addMovieToWatchlist
 );
 router.delete(
-  '/watchlists/:watchlistId/movies/:movieId',
+  '/:watchlistId/movies/:movieId',
   requireAuth,
   validateParams(watchlistIdParamSchema.extend(movieIdParamSchema.shape)),
   controller.removeMovieFromWatchlist

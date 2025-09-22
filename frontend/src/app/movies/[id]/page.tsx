@@ -8,6 +8,7 @@ import { userApi } from "@/lib/api/user";
 import { useAuthStore } from "@/store/authStore";
 import { Movie, RatingReview } from "@/types";
 import { Button } from "@/components/ui/button";
+import AddToWatchlistButton from "@/components/AddToWatchlistButton";
 import {
   Card,
   CardContent,
@@ -17,7 +18,14 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Star, Loader2, ArrowLeft, Heart, HeartOff } from "lucide-react";
+import {
+  Star,
+  Loader2,
+  ArrowLeft,
+  Heart,
+  HeartOff,
+  Bookmark,
+} from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import toast from "react-hot-toast";
@@ -197,11 +205,11 @@ export default function MovieDetailPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Button
-              variant="ghost"
+              variant="outline"
               onClick={() => router.back()}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 hover:bg-gray-50 border-gray-300 text-gray-700 font-medium"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ArrowLeft className="h-5 w-5 text-gray-600" />
               Back
             </Button>
 
@@ -210,17 +218,33 @@ export default function MovieDetailPage() {
                 variant={isFavorite ? "default" : "outline"}
                 onClick={handleToggleFavorite}
                 disabled={isLoadingFavorites}
-                className="flex items-center gap-2"
+                className={`flex items-center gap-2 ${
+                  isFavorite
+                    ? "bg-red-600 hover:bg-red-700 text-white"
+                    : "border-gray-300 hover:bg-gray-50 text-gray-600"
+                }`}
               >
                 {isLoadingFavorites ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-5 w-5 animate-spin" />
                 ) : isFavorite ? (
-                  <Heart className="h-4 w-4 fill-current" />
+                  <Heart className="h-5 w-5 fill-current" />
                 ) : (
-                  <HeartOff className="h-4 w-4" />
+                  <HeartOff className="h-5 w-5 text-gray-600" />
                 )}
                 {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
               </Button>
+            )}
+            {isAuthenticated && movie && (
+              <AddToWatchlistButton
+                movieId={movie.id}
+                movieTitle={movie.title}
+                size="default"
+                variant="outline"
+                className="border-blue-300 text-blue-600 hover:bg-blue-50"
+              >
+                <Bookmark className="h-5 w-5 mr-2" />
+                Add to Watchlist
+              </AddToWatchlistButton>
             )}
           </div>
         </div>

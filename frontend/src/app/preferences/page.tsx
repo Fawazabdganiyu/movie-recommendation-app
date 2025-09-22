@@ -217,11 +217,11 @@ export default function PreferencesPage() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
               <Button
-                variant="ghost"
+                variant="outline"
                 onClick={() => router.back()}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 hover:bg-gray-50 border-gray-300 text-gray-700 font-medium"
               >
-                <ArrowLeft className="h-4 w-4" />
+                <ArrowLeft className="h-5 w-5 text-gray-600" />
                 Back
               </Button>
               <h1 className="text-xl font-semibold text-gray-900">
@@ -241,6 +241,7 @@ export default function PreferencesPage() {
                     size="sm"
                     onClick={handleResetChanges}
                     disabled={isSaving}
+                    className="border-gray-300 hover:bg-gray-50 text-gray-700 font-medium"
                   >
                     Reset
                   </Button>
@@ -248,16 +249,16 @@ export default function PreferencesPage() {
                     size="sm"
                     onClick={handleSavePreferences}
                     disabled={isSaving}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-sm"
                   >
                     {isSaving ? (
                       <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <Loader2 className="h-5 w-5 animate-spin" />
                         Saving...
                       </>
                     ) : (
                       <>
-                        <Save className="h-4 w-4" />
+                        <Save className="h-5 w-5" />
                         Save Changes
                       </>
                     )}

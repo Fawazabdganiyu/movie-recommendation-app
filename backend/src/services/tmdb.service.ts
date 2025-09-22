@@ -74,7 +74,7 @@ export class TMDBService {
    * @returns A promise that resolves to filtered movie results.
    */
   public async filterMovies(params: {
-    genre?: number;
+    genre?: number[];
     minRating?: number;
     maxRating?: number;
     releaseDateGte?: string;
@@ -99,7 +99,7 @@ export class TMDBService {
         include_adult: false,
       };
 
-      if (genre) queryParams.with_genres = genre;
+      if (genre && genre.length > 0) queryParams.with_genres = genre.join(',');
       if (minRating) queryParams['vote_average.gte'] = minRating;
       if (maxRating) queryParams['vote_average.lte'] = maxRating;
       if (releaseDateGte) queryParams['release_date.gte'] = releaseDateGte;
@@ -179,6 +179,27 @@ export class TMDBService {
     } catch (error) {
       console.error('Error discovering movies from TMDB');
       throw error; // Re-throw to be handled by the error middleware
+    }
+  }
+
+  /**
+   * Fetches popular movies from TMDB.
+   * @param page The page number for results (default to 1).
+   * @returns A promise that resolves to popular movies.
+   */
+  public async getPopularMovies(page: number = 1) {
+    try {
+      const response = await this.api.get('/movie/popular', {
+        params: {
+          page,
+          include_adult: false,
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching popular movies from TMDB');
+      throw error;
     }
   }
 

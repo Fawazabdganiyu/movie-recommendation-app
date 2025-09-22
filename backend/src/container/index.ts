@@ -13,7 +13,7 @@ import { WatchlistRepository } from '../repositories/watchlist.repository';
 import { WatchlistModel } from '../models/watchlist.model';
 import { RatingReviewRepository } from '../repositories/rating-review.repository';
 import { RatingReviewService } from '../services/rating-review.service';
-import RatingReviewModel from '../models/rating-review.model';
+import { RatingReviewModel } from '../models/rating-review.model';
 
 let _userRepository: UserRepository | undefined;
 let _watchlistRepository: WatchlistRepository | undefined;

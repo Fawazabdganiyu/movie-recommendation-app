@@ -33,7 +33,7 @@ export const movieApi = {
 
   // Filter movies
   filterMovies: async (filters: {
-    genre?: string;
+    genre?: string | number[];
     minRating?: number;
     maxRating?: number;
     releaseDateGte?: string;
@@ -45,7 +45,11 @@ export const movieApi = {
 
     Object.entries(filters).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== "") {
-        params.append(key, value.toString());
+        if (key === "genre" && Array.isArray(value)) {
+          params.append(key, value.join(","));
+        } else {
+          params.append(key, value.toString());
+        }
       }
     });
 
@@ -118,6 +122,11 @@ export const movieApi = {
     return apiClient.get<MovieListResponse>(
       `/movies/filter?genre=${genreId}&page=${page}`,
     );
+  },
+
+  // Get popular movies
+  getPopularMovies: async (page = 1): Promise<MovieListResponse> => {
+    return apiClient.get<MovieListResponse>(`/movies/popular?page=${page}`);
   },
 
   // Get trending movies (if supported by backend)

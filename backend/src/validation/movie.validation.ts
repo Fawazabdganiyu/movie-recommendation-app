@@ -21,10 +21,9 @@ export const movieSearchSchema = z.object({
 
 export const movieFilterSchema = z.object({
   genre: z
-    .preprocess(
-      (val) => parseInt(z.string().parse(val), 10),
-      z.number().int().positive('Genre ID must be a positive integer.')
-    )
+    .string()
+    .transform((val) => val.split(',').map(Number))
+    .pipe(z.array(z.number().int().positive()))
     .optional(),
   minRating: z
     .preprocess(

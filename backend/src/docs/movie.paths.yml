@@ -3,6 +3,34 @@ info:
   title: Movie Recommendation App API - Movie Endpoints
   version: 1.0.0
 paths:
+  /movies/popular:
+    get:
+      summary: Get popular movies
+      operationId: getPopularMovies
+      tags:
+        - Movies
+      description: Retrieve a list of popular movies from The Movie Database (TMDB).
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          required: false
+          description: Page number for pagination.
+      responses:
+        '200':
+          description: Successfully retrieved popular movies.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieListResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
   /movies/search:
     get:
       summary: Search for movies by query

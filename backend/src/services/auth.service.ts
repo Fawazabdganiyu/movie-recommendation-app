@@ -2,12 +2,10 @@ import { Types } from 'mongoose';
 import { AuthTokens, User } from '@shared/types';
 import { TokenService } from './token.service';
 import { UserService } from './user.service';
-import { PasswordUtils } from '../utils/password/password.util';
 import {
   AuthenticationError,
   DuplicateRequestError,
   NotFoundError,
-  ValidationError,
 } from '../errors/api.error';
 
 export class AuthService {
