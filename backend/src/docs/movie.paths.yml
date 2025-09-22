@@ -1,0 +1,549 @@
+openapi: 3.0.0
+info:
+  title: Movie Recommendation App API - Movie Endpoints
+  version: 1.0.0
+paths:
+  /movies/search:
+    get:
+      summary: Search for movies by query
+      operationId: searchMovies
+      tags:
+        - Movies
+      description: Retrieve a list of movies based on a search query.
+      parameters:
+        - in: query
+          name: query
+          schema:
+            type: string
+          required: true
+          description: The search term for movies.
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          required: false
+          description: Page number for pagination.
+      responses:
+        '200':
+          description: Successfully retrieved search results.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieListResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /movies/filter:
+    get:
+      summary: Filter movies by criteria
+      operationId: filterMovies
+      tags:
+        - Movies
+      description: Retrieve a list of movies filtered by various criteria.
+      parameters:
+        - in: query
+          name: genre
+          schema:
+            type: string
+          required: false
+          description: Filter by genre name.
+        - in: query
+          name: minRating
+          schema:
+            type: number
+            format: float
+          required: false
+          description: Minimum rating for movies.
+        - in: query
+          name: maxRating
+          schema:
+            type: number
+            format: float
+          required: false
+          description: Maximum rating for movies.
+        - in: query
+          name: releaseDateGte
+          schema:
+            type: string
+            format: date
+          required: false
+          description: Movies released on or after this date (YYYY-MM-DD).
+        - in: query
+          name: releaseDateLte
+          schema:
+            type: string
+            format: date
+          required: false
+          description: Movies released on or before this date (YYYY-MM-DD).
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            enum:
+              [
+                popularity.desc,
+                popularity.asc,
+                release_date.desc,
+                release_date.asc,
+                vote_average.desc,
+                vote_average.asc,
+              ]
+            default: popularity.desc
+          required: false
+          description: Field to sort movies by.
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          required: false
+          description: Page number for pagination.
+      responses:
+        '200':
+          description: Successfully retrieved filtered movies.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieListResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /movies/recommendations:
+    get:
+      summary: Get personalized movie recommendations
+      operationId: getRecommendations
+      tags:
+        - Movies
+      description: |
+        Retrieve personalized movie recommendations. If authenticated, recommendations might be
+        tailored based on user preferences. Otherwise, it uses general criteria.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: genreIds
+          schema:
+            type: string
+            pattern: '^\d+(,\d+)*$'
+          required: false
+          description: Comma-separated list of TMDB genre IDs to filter recommendations.
+        - in: query
+          name: minRating
+          schema:
+            type: number
+            format: float
+            minimum: 0
+            maximum: 10
+          required: false
+          description: Minimum average rating for recommendations.
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          required: false
+          description: Page number for pagination.
+      responses:
+        '200':
+          description: Successfully retrieved movie recommendations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieListResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /movies/{id}:
+    get:
+      summary: Get movie details by ID
+      operationId: getMovieDetails
+      tags:
+        - Movies
+      description: Retrieve detailed information for a specific movie using its TMDB ID.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: int32
+          required: true
+          description: The TMDB ID of the movie to retrieve.
+      responses:
+        '200':
+          description: Successfully retrieved movie details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieDetailResponse'
+        '404':
+          description: Movie not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /movies/{movieId}/rate-review:
+    post:
+      summary: Submit a rating and review for a movie
+      operationId: submitMovieRatingReview
+      tags:
+        - Movies
+        - Ratings & Reviews
+      description: Allows an authenticated user to submit a rating and an optional review for a specified movie.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: movieId
+          schema:
+            type: integer
+            format: int32
+          required: true
+          description: The TMDB ID of the movie to rate/review.
+      requestBody:
+        description: Rating and optional review data.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrUpdateRatingRequest'
+      responses:
+        '201':
+          description: Rating and review submitted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RatingReviewResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Movie not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    patch:
+      summary: Update a rating and review for a movie
+      operationId: updateMovieRatingReview
+      tags:
+        - Movies
+        - Ratings & Reviews
+      description: Allows an authenticated user to update an existing rating and an optional review for a specified movie.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: movieId
+          schema:
+            type: integer
+            format: int32
+          required: true
+          description: The TMDB ID of the movie whose rating/review is to be updated.
+      requestBody:
+        description: Updated rating and optional review data.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrUpdateRatingRequest'
+      responses:
+        '200':
+          description: Rating and review updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RatingReviewResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Movie or existing rating/review not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /movies/{movieId}/ratings-reviews:
+    get:
+      summary: Get ratings and reviews for a movie
+      operationId: getMovieRatingsReviews
+      tags:
+        - Movies
+        - Ratings & Reviews
+      description: Retrieve all ratings and reviews for a specific movie.
+      # The route code uses `requireAuth`, but README suggests optional. Sticking to code for now.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: movieId
+          schema:
+            type: integer
+            format: int32
+          required: true
+          description: The TMDB ID of the movie to retrieve ratings/reviews for.
+      responses:
+        '200':
+          description: Successfully retrieved ratings and reviews.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Ratings and reviews fetched successfully
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RatingReview'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Movie not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Movie:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 550
+        title:
+          type: string
+          example: Fight Club
+        poster_path:
+          type: string
+          example: /pB8BM7pdXLXbZVZC3N8sx8/FightClub.jpg
+        overview:
+          type: string
+          example: A ticking-time-bomb insomniac...
+        release_date:
+          type: string
+          format: date
+          example: '1999-10-15'
+        vote_average:
+          type: number
+          format: float
+          example: 8.4
+    MovieListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Movies fetched successfully
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Movie'
+        meta:
+          type: object
+          properties:
+            page:
+              type: integer
+              example: 1
+            limit:
+              type: integer
+              example: 20
+            total:
+              type: integer
+              example: 100
+            totalPages:
+              type: integer
+              example: 5
+    MovieDetailResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Movie details fetched successfully
+        data:
+          $ref: '#/components/schemas/Movie' # Assuming Movie schema can be extended for details
+          properties:
+            genres:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+            runtime:
+              type: integer
+              example: 139
+            tagline:
+              type: string
+              example: Mischief. Mayhem. Soap.
+    CreateOrUpdateRatingRequest:
+      type: object
+      required:
+        - rating
+      properties:
+        rating:
+          type: number
+          format: float
+          minimum: 1
+          maximum: 5
+          description: The user's rating for the movie (1-5).
+          example: 4.5
+        review:
+          type: string
+          description: An optional review text for the movie.
+          example: A truly captivating film with a brilliant plot twist.
+          maxLength: 1000
+    RatingReview:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 654c600f1c320d8f78d672a1
+        userId:
+          type: string
+          example: 654c600f1c320d8f78d672a0
+        movieId:
+          type: integer
+          example: 550
+        rating:
+          type: number
+          format: float
+          example: 4.5
+        review:
+          type: string
+          example: A truly captivating film with a brilliant plot twist.
+        createdAt:
+          type: string
+          format: date-time
+          example: '2023-11-08T12:00:00.000Z'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2023-11-08T12:00:00.000Z'
+    RatingReviewResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Rating and review submitted successfully
+        data:
+          $ref: '#/components/schemas/RatingReview'
+
+  responses:
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                example: InternalServerError
+              message:
+                type: string
+                example: Something went wrong on the server.
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                example: ValidationError
+              message:
+                type: string
+                example: Invalid input provided.
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    path:
+                      type: string
+                      example: query.page
+                    message:
+                      type: string
+                      example: 'Page must be a positive integer'
+    NotFoundError:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                example: NotFoundError
+              message:
+                type: string
+                example: Resource not found.
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                example: UnauthorizedError
+              message:
+                type: string
+                example: Authentication required.

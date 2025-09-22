@@ -1,0 +1,192 @@
+paths:
+  /users/profile:
+    get:
+      summary: Get user profile
+      operationId: getUserProfile
+      tags:
+        - User Profile and Favorites
+      description: Retrieve the authenticated user's profile information.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User profile retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User profile fetched successfully
+                  data:
+                    $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    patch:
+      summary: Update user profile
+      operationId: updateUserProfile
+      tags:
+        - User Profile and Favorites
+      description: Update the authenticated user's profile information.
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: User profile data to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  example: Jane
+                lastName:
+                  type: string
+                  example: Doe
+                username:
+                  type: string
+                  example: janedoe
+                email:
+                  type: string
+                  format: email
+                  example: jane.doe@example.com
+                avatar:
+                  type: string
+                  nullable: true
+                  example: https://example.com/avatar/janedoe.jpg
+      responses:
+        '200':
+          description: User profile updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User profile updated successfully
+                  data:
+                    $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /users/favorites:
+    get:
+      summary: Get user's favorite movies
+      operationId: getUserFavoriteMovies
+      tags:
+        - User Profile and Favorites
+      description: Retrieve the authenticated user's list of favorite movies.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of favorite movies retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieListResponse' # Reusing MovieListResponse from movie.paths.yml
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /users/favorites/{movieId}:
+    post:
+      summary: Add movie to favorites
+      operationId: addFavoriteMovie
+      tags:
+        - User Profile and Favorites
+      description: Add a movie to the authenticated user's favorite list.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: movieId
+          schema:
+            type: integer
+            format: int32
+          required: true
+          description: The TMDB ID of the movie to add to favorites.
+      responses:
+        '200':
+          description: Movie added to favorites successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Movie added to favorites successfully
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Movie not found or already in favorites.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      summary: Remove movie from favorites
+      operationId: removeFavoriteMovie
+      tags:
+        - User Profile and Favorites
+      description: Remove a movie from the authenticated user's favorite list.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: movieId
+          schema:
+            type: integer
+            format: int32
+          required: true
+          description: The TMDB ID of the movie to remove from favorites.
+      responses:
+        '200':
+          description: Movie removed from favorites successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Movie removed from favorites successfully
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Movie not found in favorites.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'

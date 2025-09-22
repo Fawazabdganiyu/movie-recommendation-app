@@ -1,0 +1,53 @@
+/genres:
+  get:
+    summary: Get all available movie genres
+    operationId: getGenres
+    description: |
+      Retrieves a list of all movie genres available from The Movie Database (TMDB) API.
+      This endpoint does not require any authentication.
+    tags:
+      - Genres
+    responses:
+      '200':
+        description: Successfully retrieved the list of movie genres.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Genres fetched successfully
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        format: int32
+                        description: Unique identifier for the genre.
+                        example: 28 # Example TMDB genre ID for Action
+                      name:
+                        type: string
+                        description: Name of the genre.
+                        example: Action
+      '500':
+        description: Internal Server Error.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                error:
+                  type: string
+                  example: ServerError
+                message:
+                  type: string
+                  example: An unexpected error occurred.
