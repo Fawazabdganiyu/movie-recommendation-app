@@ -1,4 +1,6 @@
+import { loginSchema, registerSchema } from "../validation";
 import type { User } from "./user";
+import { z } from "zod";
 
 /**
  * JWT Token Pair
@@ -21,16 +23,8 @@ export interface AuthResponse {
 /**
  * Form Data Types for Authentication
  */
-export interface LoginFormData {
-  email: string;
-  password: string;
-}
-
-export interface RegisterFormData {
-  name: string;
-  email: string;
-  password: string;
-}
+export type LoginFormData = z.infer<typeof loginSchema>;
+export type RegisterFormData = z.infer<typeof registerSchema>;
 
 /**
  * Password Reset Types

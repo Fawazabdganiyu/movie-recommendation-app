@@ -29,16 +29,7 @@ export class AuthService {
   }
 
   async register(userData: User): Promise<void> {
-    const { email, password } = userData;
-    if (!email || !password) {
-      throw new ValidationError('Email and password are required');
-    }
-
-    // Validate password
-    const validation = PasswordUtils.validateStrength(password);
-    if (!validation.isValid) {
-      throw new ValidationError('Weak password', validation.errors);
-    }
+    const { email } = userData;
 
     // Check if user exists
     try {

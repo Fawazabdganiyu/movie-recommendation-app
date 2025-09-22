@@ -15,11 +15,10 @@ export interface UserPreferences {
  */
 export interface User {
     _id: Types.ObjectId;
-    username: string;
     email: string;
     password: string;
-    firstName?: string;
-    lastName?: string;
+    firstName: string;
+    lastName: string;
     fullName: string;
     avatar?: string;
     preferences: UserPreferences;
@@ -42,8 +41,8 @@ export interface PublicUser {
     _id: string;
     username: string;
     email: string;
-    firstName?: string;
-    lastName?: string;
+    firstName: string;
+    lastName: string;
     fullName: string;
     avatar?: string;
     preferences: UserPreferences;

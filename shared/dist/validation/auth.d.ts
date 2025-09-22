@@ -4,13 +4,15 @@ import { z } from "zod";
  * These can be used on both frontend and backend
  */
 export declare const loginSchema: z.ZodObject<{
-    email: z.ZodPipe<z.ZodEmail, z.ZodTransform<string, string>>;
+    email: z.ZodEmail;
     password: z.ZodString;
 }, z.core.$strip>;
 export declare const registerSchema: z.ZodObject<{
-    name: z.ZodPipe<z.ZodString, z.ZodTransform<string, string>>;
+    firstName: z.ZodPipe<z.ZodString, z.ZodTransform<string, string>>;
+    lastName: z.ZodPipe<z.ZodString, z.ZodTransform<string, string>>;
     email: z.ZodPipe<z.ZodEmail, z.ZodTransform<string, string>>;
     password: z.ZodString;
+    confirmPassword: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>;
 export declare const refreshTokenSchema: z.ZodObject<{
     refreshToken: z.ZodString;

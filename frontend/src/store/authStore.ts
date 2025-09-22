@@ -1,8 +1,8 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { User, AuthTokens } from '@/types';
-import { authApi } from '@/lib/api/auth';
-import { setAuthTokens, clearAuthTokens } from '@/lib/api/client';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { User, AuthTokens } from "@/types";
+import { authApi } from "@/lib/api/auth";
+import { setAuthTokens, clearAuthTokens } from "@/lib/api/client";
 
 interface AuthState {
   user: User | null;
@@ -14,7 +14,12 @@ interface AuthState {
 
 interface AuthActions {
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
+  register: (
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string,
+  ) => Promise<void>;
   logout: () => Promise<void>;
   clearError: () => void;
   setLoading: (loading: boolean) => void;
@@ -53,18 +58,28 @@ export const useAuthStore = create<AuthStore>()(
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
           set({
-            error: error.response?.data?.message || 'Login failed',
+            error: error.response?.data?.message || "Login failed",
             isLoading: false,
           });
           throw error;
         }
       },
 
-      register: async (name: string, email: string, password: string) => {
+      register: async (
+        firstName: string,
+        lastName: string,
+        email: string,
+        password: string,
+      ) => {
         try {
           set({ isLoading: true, error: null });
 
-          const response = await authApi.register({ name, email, password });
+          const response = await authApi.register({
+            firstName,
+            lastName,
+            email,
+            password,
+          });
 
           // Store tokens in API client
           setAuthTokens(response.tokens);
@@ -78,7 +93,7 @@ export const useAuthStore = create<AuthStore>()(
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
           set({
-            error: error.response?.data?.message || 'Registration failed',
+            error: error.response?.data?.message || "Registration failed",
             isLoading: false,
           });
           throw error;
@@ -90,7 +105,7 @@ export const useAuthStore = create<AuthStore>()(
           await authApi.logout();
         } catch (error) {
           // Continue with logout even if API call fails
-          console.error('Logout API call failed:', error);
+          console.error("Logout API call failed:", error);
         } finally {
           // Clear tokens from API client
           clearAuthTokens();
@@ -131,7 +146,7 @@ export const useAuthStore = create<AuthStore>()(
       },
     }),
     {
-      name: 'auth-store',
+      name: "auth-store",
       partialize: (state) => ({
         user: state.user,
         tokens: state.tokens,
@@ -143,6 +158,6 @@ export const useAuthStore = create<AuthStore>()(
           setAuthTokens(state.tokens);
         }
       },
-    }
-  )
+    },
+  ),
 );

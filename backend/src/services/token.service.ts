@@ -33,7 +33,7 @@ export class TokenService {
     const payload: TokenPayload = {
       userId: user._id.toString(),
       email: user.email,
-      username: user.username,
+      fullName: user.fullName,
       type: TokenType.ACCESS,
     };
 
@@ -51,7 +51,7 @@ export class TokenService {
     const payload: TokenPayload = {
       userId: user._id.toString(),
       email: user.email,
-      username: user.username,
+      fullName: user.fullName,
       type: TokenType.REFRESH,
     };
 

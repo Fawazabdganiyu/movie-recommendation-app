@@ -5,33 +5,39 @@ import { z } from "zod";
  * These can be used on both frontend and backend
  */
 export const loginSchema = z.object({
-  email: z
-    .email("Please enter a valid email address")
-    .transform((val) => val.trim().toLowerCase()),
-  password: z
-    .string()
-    .min(6, "Password must be at least 6 characters")
-    .max(128, "Password must be 128 characters or less"),
+  email: z.email("Please enter a valid email address"),
+  password: z.string("Password is required"),
 });
 
-export const registerSchema = z.object({
-  name: z
-    .string()
-    .min(2, "Name must be at least 2 characters")
-    .max(100, "Name must be 100 characters or less")
-    .transform((val) => val.trim()),
-  email: z
-    .email("Please enter a valid email address")
-    .transform((val) => val.trim().toLowerCase()),
-  password: z
-    .string()
-    .min(6, "Password must be at least 6 characters")
-    .max(128, "Password must be 128 characters or less")
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-      "Password must contain at least one lowercase letter, one uppercase letter, and one number",
-    ),
-});
+export const registerSchema = z
+  .object({
+    firstName: z
+      .string()
+      .min(2, "First name must be at least 2 characters")
+      .transform((val) => val.trim()),
+    lastName: z
+      .string()
+      .min(2, "Last name must be at least 2 characters")
+      .transform((val) => val.trim()),
+    email: z
+      .email("Please enter a valid email address")
+      .transform((val) => val.trim().toLowerCase()),
+    password: z
+      .string()
+      .min(6, "Password must be at least 6 characters")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+        "Password must contain at least one lowercase letter, one uppercase letter, and one number",
+      ),
+    confirmPassword: z.string().optional(),
+  })
+  .refine(
+    (data) => !data.confirmPassword || data.password === data.confirmPassword,
+    {
+      message: "Passwords don't match",
+      path: ["confirmPassword"],
+    },
+  );
 
 export const refreshTokenSchema = z.object({
   refreshToken: z.string().min(1, "Refresh token is required"),

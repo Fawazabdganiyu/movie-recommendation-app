@@ -17,30 +17,6 @@ export type {
   UserStats,
 } from "@shared/types";
 
-// Frontend-specific validation schemas
-import { z } from "zod";
-
-/**
- * Frontend Form Validation Schemas
- * Extended from shared schemas with frontend-specific validation
- */
-export const loginFormSchema = z.object({
-  email: z.email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
-
-export const registerFormSchema = z
-  .object({
-    name: z.string().min(2, "Name must be at least 2 characters"),
-    email: z.email("Please enter a valid email address"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
-
 /**
  * Frontend-specific types
  */
@@ -63,7 +39,3 @@ export interface UIState {
   error: string | null;
   success: string | null;
 }
-
-// Form data types
-export type LoginFormValues = z.infer<typeof loginFormSchema>;
-export type RegisterFormValues = z.infer<typeof registerFormSchema>;

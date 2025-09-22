@@ -52,7 +52,7 @@ export class UserService {
     if (user.firstName && user.lastName) {
       return user.fullName;
     }
-    return user.firstName || user.lastName || user.username;
+    return user.firstName || user.lastName;
   }
 
   async getPublicProfile(userId: Types.ObjectId): Promise<Partial<User>> {
@@ -60,7 +60,6 @@ export class UserService {
 
     return {
       _id: user._id,
-      username: user.username,
       firstName: user.firstName,
       fullName: user.fullName,
       avatar: user.avatar,

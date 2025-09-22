@@ -6,19 +6,6 @@ import { User } from '@shared/types';
 // User schema
 const userSchema = new Schema<UserDocument>(
   {
-    username: {
-      type: String,
-      required: [true, 'Username is required'],
-      unique: true,
-      trim: true,
-      minlength: [3, 'Username must be at least 3 characters'],
-      maxlength: [30, 'Username cannot exceed 30 characters'],
-      match: [
-        /^[a-zA-Z0-9_]+$/,
-        'Username can only contain letters, numbers, and underscores',
-      ],
-    },
-
     email: {
       type: String,
       required: [true, 'Email is required'],
@@ -184,7 +171,6 @@ userSchema.methods.generatePasswordResetToken = function (): string {
 userSchema.methods.getPublicProfile = function (): Partial<User> {
   return {
     _id: this._id,
-    username: this.username,
     firstName: this.firstName,
     lastName: this.lastName,
     avatar: this.avatar,

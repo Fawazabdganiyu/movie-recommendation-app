@@ -1,38 +1,25 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useAuthStore } from '@/store/authStore';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuthStore } from "@/store/authStore";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
-
-const registerSchema = z
-  .object({
-    name: z.string().min(2, 'Name must be at least 2 characters'),
-    email: z.string().email('Please enter a valid email address'),
-    password: z.string().min(6, 'Password must be at least 6 characters'),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ['confirmPassword'],
-  });
-
-type RegisterFormData = z.infer<typeof registerSchema>;
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { RegisterFormData } from "@/types";
+import { registerSchema } from "@shared/validation";
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -56,8 +43,14 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegisterFormData) => {
     try {
       clearError();
-      await registerUser(data.name, data.email, data.password);
-      router.push('/dashboard');
+
+      await registerUser(
+        data.firstName,
+        data.lastName,
+        data.email,
+        data.password,
+      );
+      router.push("/dashboard");
     } catch (err) {
       // Error is handled by the store
     }
@@ -82,16 +75,34 @@ export default function RegisterPage() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="name">Full name</Label>
+              <Label htmlFor="firstName">First name</Label>
               <Input
-                id="name"
+                id="firstName"
                 type="text"
-                autoComplete="name"
-                {...register('name')}
-                className={errors.name ? 'border-red-500' : ''}
+                autoComplete="firstName"
+                {...register("firstName")}
+                className={errors.firstName ? "border-red-500" : ""}
               />
-              {errors.name && (
-                <p className="text-sm text-red-600">{errors.name.message}</p>
+              {errors.firstName && (
+                <p className="text-sm text-red-600">
+                  {errors.firstName.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="lastName">Last name</Label>
+              <Input
+                id="lastName"
+                type="text"
+                autoComplete="lastName"
+                {...register("lastName")}
+                className={errors.lastName ? "border-red-500" : ""}
+              />
+              {errors.lastName && (
+                <p className="text-sm text-red-600">
+                  {errors.lastName.message}
+                </p>
               )}
             </div>
 
@@ -101,8 +112,8 @@ export default function RegisterPage() {
                 id="email"
                 type="email"
                 autoComplete="email"
-                {...register('email')}
-                className={errors.email ? 'border-red-500' : ''}
+                {...register("email")}
+                className={errors.email ? "border-red-500" : ""}
               />
               {errors.email && (
                 <p className="text-sm text-red-600">{errors.email.message}</p>
@@ -114,10 +125,10 @@ export default function RegisterPage() {
               <div className="relative">
                 <Input
                   id="password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   autoComplete="new-password"
-                  {...register('password')}
-                  className={errors.password ? 'border-red-500 pr-10' : 'pr-10'}
+                  {...register("password")}
+                  className={errors.password ? "border-red-500 pr-10" : "pr-10"}
                 />
                 <button
                   type="button"
@@ -143,11 +154,11 @@ export default function RegisterPage() {
               <div className="relative">
                 <Input
                   id="confirmPassword"
-                  type={showConfirmPassword ? 'text' : 'password'}
+                  type={showConfirmPassword ? "text" : "password"}
                   autoComplete="new-password"
-                  {...register('confirmPassword')}
+                  {...register("confirmPassword")}
                   className={
-                    errors.confirmPassword ? 'border-red-500 pr-10' : 'pr-10'
+                    errors.confirmPassword ? "border-red-500 pr-10" : "pr-10"
                   }
                 />
                 <button
@@ -176,13 +187,13 @@ export default function RegisterPage() {
                   Creating account...
                 </>
               ) : (
-                'Create account'
+                "Create account"
               )}
             </Button>
 
             <div className="text-center">
               <p className="text-sm text-gray-600">
-                Already have an account?{' '}
+                Already have an account?{" "}
                 <Link
                   href="/auth/login"
                   className="font-medium text-blue-600 hover:text-blue-500"
