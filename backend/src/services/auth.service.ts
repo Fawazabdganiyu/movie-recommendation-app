@@ -1,5 +1,4 @@
 import { Types } from 'mongoose';
-import { AuthTokens, User } from '@shared/types';
 import { TokenService } from './token.service';
 import { UserService } from './user.service';
 import {
@@ -7,6 +6,7 @@ import {
   DuplicateRequestError,
   NotFoundError,
 } from '../errors/api.error';
+import { AuthTokens, User } from '../types';
 
 export class AuthService {
   private static instance: AuthService;

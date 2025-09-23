@@ -11,10 +11,10 @@ import {
   movieRecommendationsSchema,
   movieIdParamSchema,
   numericIdParamSchema,
+  createOrUpdateRatingSchema,
 } from '../validation';
 import { optionalAuth, requireAuth } from '../middleware/auth.middleware';
 import { getRatingReviewService, getTmdbService } from '../container';
-import { createOrUpdateRatingSchema } from '@shared/validation';
 
 const router = Router();
 const movieController = MovieController.getInstance(

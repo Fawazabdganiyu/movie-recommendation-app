@@ -19,7 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { RegisterFormData } from "@/types";
-import { registerSchema } from "@shared/validation";
+import { registerSchema } from "@/validation";
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);

@@ -11,7 +11,7 @@ A full-stack movie recommendation application built with Next.js (React), Expres
 - TypeScript for type safety
 - Tailwind CSS for styling
 - Axios for API calls
-- Next.js built-in state management
+- Zustand for state management
 
 ### Backend
 
@@ -33,6 +33,7 @@ movie-recommendation-app/
 ├── .gitignore           # Git ignore rules
 ├── app.ts               # Main application entry point
 ├── backend/             # Express.js backend API
+│   ├── README.md        # Backend-specific documentation
 │   ├── src/             # Source code
 │   │   ├── config/      # Database & API configurations
 │   │   ├── container/   # Dependency injection container
@@ -262,7 +263,7 @@ The backend implements a comprehensive error handling system:
 -   `DELETE /api/v1/users/watchlists/:watchlistId` - Delete a specific watchlist
     -   Path params: `watchlistId`
     -   Authentication: Required
--   `POST /api/v1/users/:userId/watchlists/:watchlistId/movies/:movieId` - Add a movie to a specific watchlist
+-   `POST /api/v1/users/watchlists/:watchlistId/movies/:movieId` - Add a movie to a specific watchlist
     -   Path params: `watchlistId`, `movieId` (Watchlist ID, TMDB Movie ID)
     -   Authentication: Required
 -   `DELETE /api/v1/users/watchlists/:watchlistId/movies/:movieId` - Remove a movie from a specific watchlist
@@ -302,6 +303,11 @@ For errors:
   "message": "Validation failed: email is required"
 }
 ```
+
+## Hosted URLs
+
+- **Frontend**: [https://your-frontend-url.com](https://your-frontend-url.com) (Replace with your actual frontend URL)
+- **Backend**: [https://your-backend-url.com/api/v1](https://your-backend-url.com/api/v1) (Replace with your actual backend URL)
 
 ## Contributing
 

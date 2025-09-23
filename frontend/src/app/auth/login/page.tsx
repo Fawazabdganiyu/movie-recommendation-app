@@ -19,7 +19,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { loginSchema } from "@shared/validation";
+import { loginSchema } from "@/validation";
 
 type LoginFormData = z.infer<typeof loginSchema>;
 

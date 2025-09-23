@@ -1,9 +1,9 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
 import { config } from '../config';
-import { AuthTokens, User } from '@shared/types';
 import { TokenType } from '../enums/token.enum';
-import { DecodedToken, TokenPayload } from '../types/auth';
+import { AuthTokens, DecodedToken, TokenPayload } from '../types/auth';
 import { AuthorizationError } from '../errors/api.error';
+import { User } from '../types';
 
 export class TokenService {
   private static instance: TokenService;

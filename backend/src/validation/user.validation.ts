@@ -18,3 +18,12 @@ export const numericIdParamSchema = z.object({
 export const userIdParamSchema = z.object({
   userId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid user ID format'),
 });
+
+/**
+ * User Validation Schemas
+ */
+export const userUpdateSchema = z.object({
+  firstName: z.string().min(1).optional(),
+  lastName: z.string().min(1).optional(),
+  avatar: z.url().optional(),
+});

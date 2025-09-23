@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { success } from '../utils/response.util';
-import { User } from '@shared/types';
 import { Types } from 'mongoose';
 import { AuthService } from '../services/auth.service';
+import { User } from '../types';
 
 export class AuthController {
   private static instance: AuthController;

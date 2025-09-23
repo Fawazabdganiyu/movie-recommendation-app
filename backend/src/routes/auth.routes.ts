@@ -2,12 +2,8 @@ import { Router } from 'express';
 import { requireAuth, validateRefreshToken } from '../middleware';
 import { AuthController } from '../controllers/auth.controller';
 import { validateBody } from '../middleware/zod-validation.middleware';
-import {
-  registerSchema,
-  refreshTokenSchema,
-  loginSchema,
-} from '@shared/validation';
 import { getAuthService } from '../container';
+import { loginSchema, refreshTokenSchema, registerSchema } from '../validation';
 
 const router = Router();
 const authController = AuthController.getInstance(getAuthService());
