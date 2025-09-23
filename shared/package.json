@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "mongoose": "^8.16.4",
+    "tsx": "^4.20.3",
     "zod": "^4.1.11"
   }
 }

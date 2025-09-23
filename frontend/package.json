@@ -5,7 +5,6 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
-    "build:shared": "tsc --build ../shared/tsconfig.json",
     "start": "next start",
     "lint": "eslint"
   },
