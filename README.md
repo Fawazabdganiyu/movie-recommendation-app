@@ -306,8 +306,8 @@ For errors:
 
 ## Hosted URLs
 
-- **Frontend**: [https://your-frontend-url.com](https://your-frontend-url.com) (Replace with your actual frontend URL)
-- **Backend**: [https://your-backend-url.com/api/v1](https://your-backend-url.com/api/v1) (Replace with your actual backend URL)
+- **Frontend**: [https://movie-recommendation-app-frontend-two.vercel.app/](https://movie-recommendation-app-frontend-two.vercel.app/)
+- **Backend**: [https://movie-recommendation-app-iwor.onrender.com/api/v1](https://movie-recommendation-app-iwor.onrender.com/api/v1)
 
 ## Contributing
 
