@@ -1,13 +1,15 @@
 {
   "name": "movie-recommendation-backend",
   "version": "1.0.0",
-  "description": "Express.js backend API for Movie Recommendation App",
-  "main": "dist/server.js",
-  "type": "module",
+  "description": "This is the backend component of the Movie Recommendation App, built with Express.js and MongoDB.",
+  "main": "dist/server.ts",
+  "directories": {
+    "test": "tests"
+  },
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "tsx src/server.ts",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "format": "prettier --write src/**/*.ts",

@@ -77,5 +77,3 @@ export class App {
     await this.gracefulShutdown(0);
   }
 }
-
-export default App;

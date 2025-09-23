@@ -1,4 +1,4 @@
-import App from './app';
+import { App } from './app';
 import { config } from './config';
 import { getDbConnection } from './container';
 import {

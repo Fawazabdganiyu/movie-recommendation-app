@@ -1,6 +1,6 @@
 import { config } from '../../config';
 import { IncomingMessage, Server, ServerResponse } from 'http';
-import App from '../../app';
+import { App } from '../../app';
 
 // ASCII Art for startup
 export const displayStartupBanner = (): void => {
