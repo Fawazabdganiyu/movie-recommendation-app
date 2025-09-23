@@ -1,9 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Types } from 'mongoose';
 import { getTokenService, getUserService } from '../container';
-import { AuthMiddlewareOptions, DecodedToken } from '../types';
-import { User } from '@shared/types';
-
+import { AuthMiddlewareOptions, DecodedToken, User } from '../types';
 import { AuthenticationError, BadRequestError } from '../errors/api.error';
 
 // Extend Express Request to include user

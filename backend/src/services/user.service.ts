@@ -1,7 +1,6 @@
 import { Types } from 'mongoose';
 import { UserRepository } from '../repositories/user.repository';
-import { User } from '@shared/types';
-import { UserDocument } from '../types/user';
+import { User, UserDocument } from '../types/user';
 import { NotFoundError } from '../errors/api.error';
 
 export class UserService {
