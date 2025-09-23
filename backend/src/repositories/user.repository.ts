@@ -1,6 +1,5 @@
 import { Types } from 'mongoose';
-import { IUserModel } from '../types';
-import { User } from '@shared/types';
+import { IUserModel, User } from '../types';
 
 export class UserRepository {
   private static instance: UserRepository;

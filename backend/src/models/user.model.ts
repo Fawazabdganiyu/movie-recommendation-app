@@ -1,7 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
-import { IUserModel, UserDocument } from '../types';
+import { IUserModel, User, UserDocument } from '../types';
 import { PasswordUtils } from '../utils/password/password.util';
-import { User } from '@shared/types';
 
 // User schema
 const userSchema = new Schema<UserDocument>(
