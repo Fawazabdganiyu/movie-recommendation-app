@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Shared utilities and types for Movie Recommendation App",
   "scripts": {
-    "build": "node node_modules/typescript/bin/tsc --build tsconfig.json",
+    "build": "tsc --build tsconfig.json",
     "clean": "rm -rf dist"
   },
   "dependencies": {
