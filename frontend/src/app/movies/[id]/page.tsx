@@ -302,7 +302,7 @@ export default function MovieDetailPage() {
                 {/* Genres */}
                 {movie.genre_ids && movie.genre_ids.length > 0 && (
                   <div className="flex flex-wrap gap-2">
-                    {movie.genre_ids.map((genreId) => (
+                    {movie.genre_ids.map((genreId: number) => (
                       <Badge key={genreId} variant="secondary">
                         Genre {genreId}
                       </Badge>
