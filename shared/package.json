@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Shared utilities and types for Movie Recommendation App",
+  "rootDir": ".",
+  "outDir": "dist",
   "scripts": {
     "build": "tsc --build tsconfig.json",
     "clean": "rm -rf dist"
